@@ -1,0 +1,133 @@
+---
+title: "Small_SF"
+author: "Rose M. Schneider"
+date: "4/3/2019"
+output: html_document
+---
+#Setup
+```{r, include = FALSE}
+rm(list = ls())
+require("knitr")
+opts_knit$set(root.dir = "~/Documents/Projects/small_sf/") #this is specific to RMS, change accordingly
+library(tidyverse)
+library(magrittr)
+library(langcog)
+library(lme4)
+library(stringr)
+library(RColorBrewer)
+library(ggthemes)
+library(memisc)
+'%!in%' <- function(x,y)!('%in%'(x,y))
+```
+
+#Load data
+```{r}
+data.raw <- read.csv("~/Documents/Projects/small_sf/Data/small_sf_data.csv")
+
+##Exclude any pilots and copypaste
+data.raw %<>%
+  filter(SID != "CopyPasteMe", 
+         Exclusion_reason != "Pilot")%>%
+  droplevels()%>%
+  dplyr::select(-X, -X.1, -X.2, -X.3, -X.4)%>%
+  mutate(Age = as.numeric(as.character(Age)))
+```
+
+#Exclusions - all
+```{r}
+#how many kids pre-exclusions?
+data.raw %>%
+  distinct(SID, Age)%>%
+  summarise(n = n())
+
+#Why are kids excluded?
+data.raw %>%
+  filter(Exclude == 1)%>%
+  distinct(SID, Exclude, Exclusion_reason)%>%
+  group_by(Exclusion_reason)%>%
+  summarise(n = n())
+
+##Exclude
+all.data <- data.raw %>%
+  filter(Exclude != 1)
+```
+
+#Exclude trials
+```{r}
+all.data %<>%
+  mutate(Exclude_trial = ifelse(is.na(Exclude_trial), 0, 1))%>%
+  filter(Exclude_trial != 1)
+```
+
+#Change correct to numeric
+```{r}
+all.data %<>%
+  mutate(Correct = as.numeric(as.character(Correct)))
+```
+
+#Demographics
+```{r}
+all.data %>%
+  group_by(Knower_level)%>%
+  distinct(SID, Age, Knower_level)%>%
+  summarise(n = n(), 
+            mean_age = mean(Age, na.rm = TRUE), 
+            sd_age = sd(Age, na.rm = TRUE))
+```
+
+---
+##Mean performance
+By N-level
+```{r}
+all.data %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "CP")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)))%>%
+  filter(Task == "SF")%>%
+  group_by(Task_item, Knower_level)%>%
+   summarise(mean = mean(Correct, na.rm = TRUE), 
+            n = n(), 
+            sd = sd(Correct, na.rm = TRUE), 
+            se = sd/sqrt(n)) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level, group= Knower_level)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right", legend.title = element_blank()) + 
+  facet_wrap(~Knower_level, ncol = 3)
+```
+
+#Next number performance
+```{r}
+nn.data <-  read.csv("~/Documents/Projects/small_sf/Data/next_number.csv")
+
+#filter to kids who are in the small sf dataset
+nn.data %<>% 
+  filter(SID %in% all.data$SID)
+
+#compute next number mean scoore for each item for each participant
+nn.ms <- nn.data %>%
+  group_by(SID, Task_item, Knower_level)%>%
+  summarise(mean = mean(as.numeric(as.character(Correct)), na.rm = TRUE))%>%
+  mutate(Task = "Next Number")
+
+sf.ms <- all.data %>%
+  filter(SID %in% nn.ms$SID, 
+         Task == "SF")%>%
+  group_by(SID, Task_item, Knower_level)%>%
+  summarise(mean = mean(as.numeric(as.character(Correct)), na.rm = TRUE))
+
+tmp <- bind_rows(nn.ms, sf.ms)
+
+#plot by task and knower_level
+tmp %>%
+  group_by(Knower_level, Task)%>%
+  summarise(n = n(), 
+            mean = mean(mean, na.rm = TRUE))
+```
