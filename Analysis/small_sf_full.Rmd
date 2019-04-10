@@ -4,7 +4,6 @@ author: "Rose M. Schneider"
 date: "4/3/2019"
 output: html_document
 ---
-#Setup
 ```{r, include = FALSE}
 rm(list = ls())
 require("knitr")
@@ -20,7 +19,10 @@ library(memisc)
 '%!in%' <- function(x,y)!('%in%'(x,y))
 ```
 
-#Load data
+---
+
+##Data management
+###Load
 ```{r}
 data.raw <- read.csv("~/Documents/Projects/small_sf/Data/small_sf_data.csv")
 
@@ -33,7 +35,7 @@ data.raw %<>%
   mutate(Age = as.numeric(as.character(Age)))
 ```
 
-#Exclusions - all
+###Exclusions - all
 ```{r}
 #how many kids pre-exclusions?
 data.raw %>%
@@ -49,36 +51,71 @@ data.raw %>%
 
 ##Exclude
 all.data <- data.raw %>%
-  filter(Exclude != 1)
+  filter(Exclude != 1)%>%
+  droplevels()
 ```
 
-#Exclude trials
+###Exclude trials
 ```{r}
 all.data %<>%
-  mutate(Exclude_trial = ifelse(is.na(Exclude_trial), 0, 1))%>%
-  filter(Exclude_trial != 1)
+  mutate(Exclude_trial = ifelse(is.na(Exclude_trial), "0", as.character(Exclude_trial)))%>%
+  filter(Exclude_trial != "1")
+
+##exclude training for SF
+all.data %<>%
+  mutate(Trial_number = ifelse(is.na(Trial_number), "HC", as.character(Trial_number)))%>%
+  filter(Trial_number != "Training")
 ```
 
-#Change correct to numeric
+###Change correct to numeric
 ```{r}
 all.data %<>%
   mutate(Correct = as.numeric(as.character(Correct)))
 ```
 
-#Demographics
+---
+
+##Demographics
+By N-level
 ```{r}
 all.data %>%
   group_by(Knower_level)%>%
   distinct(SID, Age, Knower_level)%>%
   summarise(n = n(), 
             mean_age = mean(Age, na.rm = TRUE), 
-            sd_age = sd(Age, na.rm = TRUE))
+            sd_age = sd(Age, na.rm = TRUE)) %>%
+  kable()
+
+
+all.data %>%
+  ggplot(aes(x = Knower_level, y = Age, fill = Knower_level)) + 
+  geom_boxplot() + 
+  theme_bw()
 ```
 
+
+
 ---
-##Mean performance
+
+#Unit Task Visualizations 
+
+##Mean performance for all participants
 By N-level
 ```{r}
+##descriptives
+all.data %>%
+  filter(Task == "SF", 
+         Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "CP")%>%
+  group_by(Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE), 
+            sd= sd(Correct, na.rm = TRUE))%>%
+  kable()
+
+#visualization
 all.data %>%
   filter(Knower_level == "1" | 
            Knower_level == "2" | 
@@ -89,7 +126,7 @@ all.data %>%
          Correct = as.numeric(as.character(Correct)))%>%
   filter(Task == "SF")%>%
   group_by(Task_item, Knower_level)%>%
-   summarise(mean = mean(Correct, na.rm = TRUE), 
+  summarise(mean = mean(Correct, na.rm = TRUE),
             n = n(), 
             sd = sd(Correct, na.rm = TRUE), 
             se = sd/sqrt(n)) %>%
@@ -99,35 +136,243 @@ all.data %>%
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
-  theme(legend.position = "right", legend.title = element_blank()) + 
-  facet_wrap(~Knower_level, ncol = 3)
+  theme(legend.position = "right") + 
+  facet_wrap(~Knower_level, ncol = 3) + 
+  labs(x = "Number queried", y = "Mean Unit performance")
 ```
 
-#Next number performance
+##By CP/Subset
+Same as above, except all subset-knowers are grouped together
 ```{r}
+all.data %<>%
+  mutate(CP_subset = ifelse(Knower_level == "CP", "CP", "Subset"))
+```
+
+```{r}
+all.data %>%
+    filter(Task == "SF")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)))%>%
+  group_by(Task_item, CP_subset)%>%
+   summarise(mean = mean(Correct, na.rm = TRUE), 
+            n = n(), 
+            sd = sd(Correct, na.rm = TRUE), 
+            se = sd/sqrt(n)) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right") + 
+  facet_wrap(~CP_subset) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_brewer(palette = "Set1")+ 
+  labs(x = "Number queried", y = "Mean Unit performance")
+```
+
+---
+
+#Highest Count
+```{r}
+##add highest count as a column
+
+hc.lookup <- all.data %>%
+  filter(Task == "Highest_count")%>%
+  dplyr::rename(highest_count = Response)%>%
+  dplyr::select(SID, highest_count)
+
+all.data <- right_join(all.data, hc.lookup, by = "SID")
+
+#HCs are being read in as factors - change to numeric
+all.data %<>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+
+#one kid didn't do highest count, so we will exclude them from analyses containing hc
+```
+
+#histogram of HC
+```{r}
+all.data %>%
+  filter(!is.na(highest_count))%>%
+  distinct(SID, Age, CP_subset, highest_count)%>%
+  ggplot(aes(x = highest_count, fill = CP_subset)) + 
+   geom_histogram(color = "black")+
+  theme_bw() + 
+  scale_fill_brewer(palette = "Set1") + 
+  labs(x = "Highest Count (unprompted", y = "Count")
+```
+
+---
+
+#Analyses
+###Make SF model dfs 
+```{r}
+model.df <- all.data %>%
+  filter(Task == "SF")%>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+```
+
+##Do subset-knowers perform significantly better than chance on this task overall?
+Yes: Significant Wald Z = 3.49, *p*= .0005
+```{r}
+#filter down to subset knowers
+subset.chance.overall <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
+                               data = subset(model.df, CP_subset == "Subset"))
+summary(subset.chance.overall)
+```
+
+##Do subset-knowers perform significantly above chance for numbers WITHIN their knower level? 
+Yes, subset-knowers perform significantly better than chance for numbers within their Knower Level; Wald Z = 5.08, *p* < .0001.
+```{r}
+##add to model.df whether a trial was within or outside knower level 
+model.df %<>%
+  filter(CP_subset != "CP")%>%
+  mutate(within_kl = ifelse(Task_item <= as.numeric(as.character(Knower_level)), "Within", "Outside"))
+
+subset.chance.within.kl <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
+                                 data = subset(model.df, within_kl == "Within"))
+
+summary(subset.chance.within.kl)
+```
+
+##Do subset-knowers with greater levels of number exposure (HC) have more accurate performance overall
+No, Chisq(1) = 0.62, *p* = .43
+```{r}
+##get highest count for each kid, add to model.df 
+subset.hc <- glmer(Correct ~ highest_count + (1|SID), 
+                   family = "binomial", data = subset(model.df, CP_subset == "Subset"))
+
+#compare to base
+anova(subset.chance.overall, subset.hc, test = 'LRT')
+```
+
+##Do subset-knowers with greater levels of number exposure have more accurate performance for numbers within their knower-level?
+No; Chisq(1) = 0.77, *p* = .38
+```{r}
+subset.hc.within <- glmer(Correct ~ highest_count + (1|SID), 
+                          family = "binomial", data = subset(model.df, within_kl == "Within"))
+
+#lrt to compare
+anova(subset.chance.within.kl, subset.hc.within, test = 'LRT')
+```
+
+##Do CP-knowers have significantly better performance on this task in comparison to subset-knowers?
+CP-knowers are significantly more accurate on this task: Chisq(1) = 8.90, *p* = .003
+```{r}
+model.cp <- all.data %>%
+  filter(Task == "SF", 
+         !is.na(highest_count))%>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+
+#construct base model with age
+cp.subset.base <- glmer(Correct ~ Age + (1|SID), 
+                        family = "binomial", data = model.cp)
+
+#add knower level - does this explain additional variance?
+cp.subset.kl <- glmer(Correct ~ CP_subset + Age + (1|SID), 
+                      family = "binomial", data = model.cp)
+
+#compare - does KL improve the fit of the base model? 
+anova(cp.subset.base, cp.subset.kl, test = 'LRT')
+```
+
+##Does counting exposure predict performance with both CP- and Subset-knowers?
+Yes; Chisq(1) = 6.33, *p* = .01
+```{r}
+cp.hc <- glmer(Correct ~ highest_count + Age + (1|SID), 
+               family = "binomial", data = model.cp)
+
+#compare
+anova(cp.subset.base, cp.hc, test = 'LRT')
+```
+
+##Finally, does counting exposure predict performance on top of KL?
+No; Chisq(1) = 2.10, *p* = 0.15
+```{r}
+##KL gets added first because it has a lower AIC
+cp.hc.kl <- glmer(Correct ~ highest_count + CP_subset + Age + (1|SID), 
+                  family = "binomial", data = model.cp)
+
+#compare
+anova(cp.subset.kl, cp.hc.kl, test = 'LRT')
+```
+
+##Correlation between age and unit task performance 
+Marginally significant correlation between age and Unit task performance; *r* = .21, *p* = .08
+```{r}
+sf.ms <- all.data %>%
+  filter(Task == "SF")%>%
+  group_by(SID, Age)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+cor.test(sf.ms$mean, sf.ms$Age)
+```
+
+---
+
+#Next Number - Pilot, N = 16
+Do subset-knowers who succeed on Small SF do so because of an induction made over the count list? Tested children on Next Number ("*N*, what comes next?") for numbers tested on Unit Task.
+
+##Visualization of NN and SF mean performance - subset-knowers
+Make a data frame that has next number pilot data
+```{r, warning=FALSE}
+#warnings suppressed because factors are coerced to character
 nn.data <-  read.csv("~/Documents/Projects/small_sf/Data/next_number.csv")
 
-#filter to kids who are in the small sf dataset
+#filter to kids who are in the small sf dataset, only pull out the data that is necessary
 nn.data %<>% 
-  filter(SID %in% all.data$SID)
+  filter(SID %in% all.data$SID)%>%
+  dplyr::select(SID, Age, Knower_level, Task_item, Response, Correct)%>%
+  mutate(Task = "NN")%>%
+  mutate(Correct = as.numeric(as.character(Correct)))
 
-#compute next number mean scoore for each item for each participant
-nn.ms <- nn.data %>%
-  group_by(SID, Task_item, Knower_level)%>%
-  summarise(mean = mean(as.numeric(as.character(Correct)), na.rm = TRUE))%>%
-  mutate(Task = "Next Number")
-
-sf.ms <- all.data %>%
-  filter(SID %in% nn.ms$SID, 
+##do the same for small sf - pull out the kids who are in nn
+sf.data <- all.data %>%
+  filter(SID %in% nn.data$SID, 
          Task == "SF")%>%
-  group_by(SID, Task_item, Knower_level)%>%
-  summarise(mean = mean(as.numeric(as.character(Correct)), na.rm = TRUE))
+  dplyr::select(SID, Age, Knower_level, Task, Task_item, Response, Correct)%>%
+  mutate(Correct = as.numeric(as.character(Correct)))
 
-tmp <- bind_rows(nn.ms, sf.ms)
+##bind these two dfs together
+combined.data <- bind_rows(sf.data, nn.data)
 
-#plot by task and knower_level
-tmp %>%
-  group_by(Knower_level, Task)%>%
-  summarise(n = n(), 
-            mean = mean(mean, na.rm = TRUE))
+combined.data %<>%
+  mutate(SID = factor(SID), 
+         Task = factor(Task))
+```
+
+```{r}
+combined.data %<>%
+  mutate(CP_subset = ifelse(Knower_level == "CP", "CP", "Subset"))
+```
+
+```{r}
+combined.data %>%
+  mutate(Task_item = factor(Task_item))%>%
+  filter(!is.na(Task_item))%>%
+  filter(CP_subset == "Subset")%>%
+  group_by(Task, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE), 
+            n = n(), 
+            sd = sd(Correct, na.rm = TRUE), 
+            se = sd/sqrt(n))%>%
+  ggplot(aes(x = Task_item, y = mean, color = Task, group = Task)) + 
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right") + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_brewer(palette = "Dark2") + 
+  labs(title = "Subset-knowers: Next Number and Unit performance")
+```
+
+##Do subset-knowers have significantly worse performance on NN than SF? 
+Yes; subset-knowers have significantly better performance on SF than on NN (\beta = .9, *p* = .0001)
+```{r}
+subset.nn <- glmer(Correct ~ Task + Age + (1|SID),
+                   family = "binomial", data = combined.data)
+summary(subset.nn)
 ```
