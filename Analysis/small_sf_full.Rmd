@@ -536,7 +536,8 @@ all.data.study2 %>%
 ###Make SF model dfs 
 ```{r}
 model.df.study1 <- all.data.study1 %>%
-  filter(Task == "SF")%>%
+  filter(Task == "SF", 
+         !is.na(Correct))%>%
   mutate(highest_count = as.numeric(as.character(highest_count)))
 ```
 
@@ -553,12 +554,12 @@ summary(subset.chance.overall)
 Yes, subset-knowers perform significantly better than chance for numbers within their Knower Level; Wald Z = 5.19, *p* < .0001.
 ```{r}
 ##add to model.df whether a trial was within or outside knower level 
-model.df.study1 %<>%
+model.df.study1.within <- model.df.study1 %>%
   filter(CP_subset != "CP")%>%
   mutate(within_kl = ifelse(Task_item <= as.numeric(as.character(Knower_level)), "Within", "Outside"))
 
 subset.chance.within.kl <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
-                                 data = subset(model.df.study1, within_kl == "Within"))
+                                 data = subset(model.df.study1.within, within_kl == "Within"))
 
 summary(subset.chance.within.kl)
 ```
@@ -578,7 +579,7 @@ anova(subset.chance.overall, subset.hc, test = 'LRT')
 No; Chisq(1) = 0.65, *p* = .42
 ```{r}
 subset.hc.within <- glmer(Correct ~ highest_count + (1|SID), 
-                          family = "binomial", data = subset(model.df.study1, within_kl == "Within"))
+                          family = "binomial", data = subset(model.df.study1.within, within_kl == "Within"))
 
 #lrt to compare
 anova(subset.chance.within.kl, subset.hc.within, test = 'LRT')
@@ -590,7 +591,8 @@ CP-knowers are significantly more accurate on this task: Chisq(1) = 5.36, *p* = 
 ```{r}
 model.cp.study1 <- all.data.study1 %>%
   filter(Task == "SF", 
-         !is.na(highest_count))%>%
+         !is.na(highest_count), 
+         !is.na(Correct))%>%
   mutate(highest_count = as.numeric(as.character(highest_count)), 
           age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)))
 
@@ -647,9 +649,11 @@ cor.test(sf.ms$mean, sf.ms$Age)
 ##This is for Next number AND SF analyses
 model.df.study2 <- all.data.study2 %>%
   filter(Task == "SF" | 
-           Task == "Next_number")%>%
+           Task == "Next_number", 
+         !is.na(Correct))%>%
   mutate(highest_count = as.numeric(as.character(highest_count)), 
-         age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)))
+         age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)), 
+         highest_count.c = as.vector(scale(highest_count, center = TRUE, scale = TRUE)))
 ```
 
 ##Test 1: Comparison between Unit Task and Next Number performance for subset-knowers
@@ -670,17 +674,17 @@ summary(nn.v.sf.task)
 Yes, even for items within a subset-knower's knower level, performance on SF is still significantly better than performance on NN: Wald Z = 4.58, *p* < .0001. 
 ```{r}
 #add a term indicating whether item is within/outside knower level
-model.df.study2 %<>%
+model.df.study2.within <- model.df.study2 %>%
   mutate(within_kl = ifelse(Task_item <= as.numeric(as.character(Knower_level)), "Within", "Outside"), 
          within_kl = factor(within_kl))
 
 #make base
 within.nn.v.sf.base <- glmer(Correct ~ 1 + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & 
                                                          within_kl == "Within"))
 #add task
 within.nn.v.sf.task <- glmer(Correct ~ Task + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & 
                                                          within_kl == "Within"))
 #compare
 anova(within.nn.v.sf.base, within.nn.v.sf.task, test= 'LRT') # significant
@@ -702,7 +706,7 @@ summary(subset.sf.chance)
 Yes, SS-knowers perform significantly better than chance for items within their knower level: Wald Z = 3.55, *p* = .0004
 ```{r}
 subset.sf.chance.within <- glmer(Correct ~ 1 + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & Task == "SF" 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & Task == "SF" 
                                                          & within_kl == "Within"))
 summary(subset.sf.chance.within)
 ```
@@ -720,7 +724,7 @@ summary(subset.nn.chance)
 Yes, but performance is significantly worse than chance: Wald Z = -2.25, *p* = .03
 ```{r}
 subset.nn.chance.within <- glmer(Correct ~ 1 + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & Task == "Next_number" & 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & Task == "Next_number" & 
                                                            within_kl == "Within"))
 
 summary(subset.nn.chance.within)
@@ -728,20 +732,52 @@ summary(subset.nn.chance.within)
 
 ##Test 7: Comparison between CP and SS-knowers
 ###Test 7a: Unit Task 
+CP-knowers are *not* performing significantly different than SS-knowers. 
 ```{r}
+model.cp.study2 <- model.df.study2 %>%
+  filter(!is.na(highest_count))
+
 #make base
-cp.subset.base. <- glmer(Correct ~ age.c + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, Task == "SF"))
+cp.subset.base <- glmer(Correct ~ age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "SF"))
+summary(cp.subset.base)
+
 #add cp_subset
 cp.subset.kl <- glmer(Correct ~ CP_subset + age.c + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, Task == "SF"))
+                      family = 'binomial', data = subset(model.cp.study2, Task == "SF"))
+summary(cp.subset.kl)
 #compare
 anova(cp.subset.base, cp.subset.kl, test = 'LRT')
-#add highest_count
-cp.subset.hc <- glmer(Correct ~ highest_count + age.c + (1|SID), 
-                      family = 'binomial', data = subset(model.df.study2, Task == "SF"))
 
+#add highest_count
+cp.subset.hc <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "SF"))
+#compare
+anova(cp.subset.base, cp.subset.hc, test = 'LRT') #highest count is not significant
 ```
+
+###Test 7b: Next Number Task 
+CP-knowers are *not* performing significantly different than SS-knowers. 
+```{r}
+#make base
+cp.subset.base.nn <- glmer(Correct ~ age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+
+
+#add cp_subset
+cp.subset.kl.nn <- glmer(Correct ~ CP_subset + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+
+#compare
+anova(cp.subset.base.nn, cp.subset.kl.nn, test = 'LRT') #significant
+
+#add highest_count
+cp.subset.hc.nn <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number")) ##NB model is failing to converge
+#compare
+anova(cp.subset.base.nn, cp.subset.hc.nn, test = 'LRT') #highest count is not significant
+```
+
 
 
 #Next Number - Pilot, N = 16
