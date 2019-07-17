@@ -522,17 +522,19 @@ all.data.study2 %>%
   langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
   geom_point(size = 2.5) + 
-  geom_line(size = .7) +
+  geom_line(size = .7, 
+            linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
   theme(panel.grid = element_blank(), 
-        legend.position = "right") + 
+        legend.position = "bottom", 
+        legend.title = element_blank()) + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
   langcog::scale_color_solarized("Knower level") +
   labs(x = "Starting set size", y = "Mean Unit Task performance")
 
-ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CP_subset_Unit.png", width = 6, height = 4)
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CP_subset_Unit.png", width = 5, height = 5)
 ```
 
 ---
@@ -664,7 +666,8 @@ all.data.study2 %>%
   geom_point(size = 2.5, 
              show.legend = FALSE) + 
   geom_line(size = .7, 
-            show.legend = FALSE) +
+            show.legend = FALSE, 
+            linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5, 
                 show.legend = FALSE) +
@@ -730,18 +733,19 @@ all.data.study2 %>%
   langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
   geom_point(size = 2.5) + 
-  geom_line(size = .7) +
+  geom_line(size = .7, linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
-  theme(legend.position = "right", 
-        panel.grid = element_blank()) + 
+  theme(legend.position = "bottom", 
+        panel.grid = element_blank(), 
+        legend.title = element_blank()) + 
   facet_wrap(~Knower_level.combined) + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
   scale_color_manual(values = task.pal)+ 
   labs(x = "Number queried", y = "Mean task performance")
 
-ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_nKL_NNandUnit.png", width = 7, height = 3)
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_nKL_NNandUnit.png", width = 7, height = 3.5)
 
 ```
 
@@ -764,18 +768,20 @@ all.data.study2 %>%
   langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
   geom_point(size = 2.5) + 
-  geom_line(size = .7) +
+  geom_line(size = .7, linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
-  theme(legend.position = "right", 
-        panel.grid = element_blank()) + 
+  theme(
+        panel.grid = element_blank(), 
+        legend.position = "bottom", 
+        legend.title = element_blank()) + 
   facet_wrap(~CP_subset) + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
   scale_color_manual(values = task.pal)+ 
   labs(x = "Number queried", y = "Mean task performance")
 
-ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CPSubset_NNandUnit.png", width = 7, height = 3)
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CPSubset_NNandUnit.png", width = 7, height = 4)
 ```
 
 ---
