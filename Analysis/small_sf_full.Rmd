@@ -233,6 +233,25 @@ all.data.study1 %>%
   scale_fill_brewer(palette = "Set1") +
   labs(title = 'Study 1: Age by CP/Subset')
 
+
+#age
+all.data.study1 %>%
+  distinct(SID, CP_subset, Age)%>%
+  group_by(CP_subset)%>%
+  summarise(n = n(), 
+   mean_age = mean(Age, na.rm = TRUE), 
+            sd_age = sd(Age, na.rm = TRUE))%>%
+  kable()
+
+#sex
+all.data.study1 %>%
+  distinct(SID, CP_subset, Sex)%>%
+  group_by(CP_subset, Sex)%>%
+  summarise(n = n())%>%
+  group_by(CP_subset)%>%
+  mutate(total.n = sum(n))%>%
+  kable()
+
 #study 2
 all.data.study2 %>%
   ggplot(aes(x = CP_subset, y = Age, fill = CP_subset)) + 
@@ -240,6 +259,24 @@ all.data.study2 %>%
   theme_bw() + 
   scale_fill_brewer(palette = "Set1") +
   labs(title = 'Study 2: Age by CP/Subset')
+
+#age
+all.data.study2 %>%
+  distinct(SID, CP_subset, Age)%>%
+  group_by(CP_subset)%>%
+  summarise(n = n(), 
+   mean_age = mean(Age, na.rm = TRUE), 
+            sd_age = sd(Age, na.rm = TRUE))%>%
+  kable()
+
+#sex
+all.data.study2 %>%
+  distinct(SID, CP_subset, Sex)%>%
+  group_by(CP_subset, Sex)%>%
+  summarise(n = n())%>%
+  group_by(CP_subset)%>%
+  mutate(total.n = sum(n))%>%
+  kable()
 
 ```
 
@@ -265,7 +302,7 @@ all.data.study1 %>%
             sd= sd(Correct, na.rm = TRUE))%>%
   kable()
 
-#visualization
+#visualization 
 all.data.study1 %>%
   filter(Knower_level == "1" | 
            Knower_level == "2" | 
@@ -290,6 +327,44 @@ all.data.study1 %>%
   theme(legend.position = "right") + 
   facet_wrap(~Knower_level, ncol = 3) + 
   labs(x = "Number queried", y = "Mean Unit performance")
+```
+
+##Figure: Subset-knowers only
+```{r}
+#visualization 
+all.data.study1 %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3"), "3- & 4-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3- & 4-knowers"), 
+                               labels = c("1-knowers", "2-knowers", "3- & 4-knowers")))%>%
+  filter(Task == "SF")%>%
+  group_by(Task_item, Knower_level.combined)%>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
+  geom_point(size = 2.5, 
+             show.legend = FALSE) + 
+  geom_line(size = .7, 
+            show.legend = FALSE) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5, 
+                show.legend = FALSE) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined, ncol = 4) + 
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit Task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study1_nKL_Unit.png", width = 7, height = 3)
 ```
 
 ##Study 2: Mean performance for all participants
@@ -335,13 +410,55 @@ all.data.study2 %>%
   labs(x = "Number queried", y = "Mean Unit performance")
 ```
 
-##Study 1: Mean performance by CP/Subset
+
+##Figure: Subset-knowers only, Study 2
+```{r}
+#visualization 
+all.data.study2 %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "5")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3" | Knower_level == "5"), "3-, 4-, & 5-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3-, 4-, & 5-knowers"), 
+                               labels = c("1-knowers", "2-knowers", "3-, 4-, & 5-knowers")))%>%
+  filter(Task == "SF")%>%
+  group_by(Task_item, Knower_level.combined)%>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
+  geom_point(size = 2.5, 
+             show.legend = FALSE) + 
+  geom_line(size = .7, 
+            show.legend = FALSE) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5, 
+                show.legend = FALSE) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined, ncol = 4) + 
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit Task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_nKL_Unit.png", width = 7, height = 3)
+```
+
+##Figure: Study 1: Mean performance by CP/Subset
 
 ```{r}
 all.data.study1 %>%
     filter(Task == "SF")%>%
   mutate(Task_item = factor(Task_item), 
-         Correct = as.numeric(as.character(Correct)))%>%
+         Correct = as.numeric(as.character(Correct)), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
   group_by(Task_item, CP_subset)%>%
    # summarise(mean = mean(Correct, na.rm = TRUE), 
    #          n = n(), 
@@ -354,11 +471,13 @@ all.data.study1 %>%
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
-  theme(legend.position = "right") + 
-  facet_wrap(~CP_subset) + 
+  theme(panel.grid = element_blank(), 
+        legend.position = "right") + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
-  scale_color_brewer(palette = "Set1")+ 
-  labs(x = "Number queried", y = "Mean Unit performance")
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit Task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study1_CP_subset_Unit.png", width = 6, height = 4)
 ```
 
 ##Study 2: Mean performance by CP/Subset
@@ -384,6 +503,36 @@ all.data.study2 %>%
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
   scale_color_brewer(palette = "Set1")+ 
   labs(x = "Number queried", y = "Mean Unit performance")
+```
+
+##Figure: Study 2: Mean performance by CP/Subset
+
+```{r}
+all.data.study2 %>%
+    filter(Task == "SF")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
+  group_by(Task_item, CP_subset)%>%
+   # summarise(mean = mean(Correct, na.rm = TRUE), 
+   #          n = n(), 
+   #          sd = sd(Correct, na.rm = TRUE), 
+   #          se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 13) + 
+  theme(panel.grid = element_blank(), 
+        legend.position = "right") + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit Task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CP_subset_Unit.png", width = 6, height = 4)
 ```
 
 ---
@@ -473,19 +622,60 @@ all.data.study2 %>%
          Correct = as.numeric(as.character(Correct)))%>%
   filter(Task == "Next_number")%>%
   group_by(Task_item, Knower_level)%>%
-  summarise(mean = mean(Correct, na.rm = TRUE),
-            n = n(), 
-            sd = sd(Correct, na.rm = TRUE), 
-            se = sd/sqrt(n)) %>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level, group= Knower_level)) +
   geom_point(size = 2.5) + 
   geom_line(size = .7) +
-  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
   theme(legend.position = "right") + 
   facet_wrap(~Knower_level, ncol = 3) + 
-  labs(x = "Number queried", y = "Mean Next Number performance")
+  labs(x = "Number queried", y = "Mean Next Number performance", 
+       title = "Next Number, Study 2")
+```
+
+##Figure: Subset-knowers only, Study 2
+```{r}
+#visualization 
+all.data.study2 %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "5")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3" | Knower_level == "5"), "3-, 4-, & 5-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3-, 4-, & 5-knowers"), 
+                               labels = c("1-knowers", "2-knowers", "3-, 4-, & 5-knowers")))%>%
+  filter(Task == "Next_number")%>%
+  group_by(Task_item, Knower_level.combined)%>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
+  geom_point(size = 2.5, 
+             show.legend = FALSE) + 
+  geom_line(size = .7, 
+            show.legend = FALSE) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5, 
+                show.legend = FALSE) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined, ncol = 4) + 
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting number", y = "Mean Next Number performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_nKL_NN.png", width = 7, height = 3)
 ```
 
 ##Study 2: Mean performance by CP/Subset
@@ -495,14 +685,15 @@ all.data.study2 %>%
   mutate(Task_item = factor(Task_item), 
          Correct = as.numeric(as.character(Correct)))%>%
   group_by(Task_item, CP_subset)%>%
-   summarise(mean = mean(Correct, na.rm = TRUE), 
-            n = n(), 
-            sd = sd(Correct, na.rm = TRUE), 
-            se = sd/sqrt(n)) %>%
+   # summarise(mean = mean(Correct, na.rm = TRUE), 
+   #          n = n(), 
+   #          sd = sd(Correct, na.rm = TRUE), 
+   #          se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
   geom_point(size = 2.5) + 
   geom_line(size = .7) +
-  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
   theme(legend.position = "right") + 
@@ -514,25 +705,77 @@ all.data.study2 %>%
 
 ##Visualization of Unit vs. Next Number performance
 ```{r}
+task.pal <- c("#cb4b16", "#2aa198")
+
 all.data.study2 %>%
-  filter(Task == "SF" | 
+   filter(Task == "SF" | 
            Task == "Next_number")%>%
-  group_by(CP_subset, Task, Task_item)%>%
-  summarise(n = n(), 
-            mean = mean(Correct, na.rm = TRUE), 
-            sd = sd(Correct, na.rm = TRUE), 
-            se = sd/sqrt(n)) %>%
-  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "5")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3" | Knower_level == "5"), "3-, 4-, & 5-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3-, 4-, & 5-knowers"), 
+                               labels = c("1-knowers", "2-knowers", "3-, 4-, & 5-knowers")), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                labels = c("Next Number", "Unit Task")))%>%
+  group_by(Knower_level.combined, Task, Task_item)%>%
+  # summarise(n = n(), 
+  #           mean = mean(Correct, na.rm = TRUE), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
   geom_point(size = 2.5) + 
   geom_line(size = .7) +
-  geom_errorbar(aes(ymin = mean - se, ymax = mean + se), 
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
-  theme(legend.position = "right") + 
-  facet_wrap(~Task) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined) + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
-  scale_color_brewer(palette = "Set1")+ 
+  scale_color_manual(values = task.pal)+ 
   labs(x = "Number queried", y = "Mean task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_nKL_NNandUnit.png", width = 7, height = 3)
+
+```
+
+##Figure: Study 2, Mean NN and Unit performance by CP/Subset
+```{r}
+all.data.study2 %>%
+   filter(Task == "SF" | 
+           Task == "Next_number")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                labels = c("Next Number", "Unit Task")), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
+  group_by(CP_subset, Task, Task_item)%>%
+  # summarise(n = n(), 
+  #           mean = mean(Correct, na.rm = TRUE), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 13) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~CP_subset) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_manual(values = task.pal)+ 
+  labs(x = "Number queried", y = "Mean task performance")
+
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study2_CPSubset_NNandUnit.png", width = 7, height = 3)
 ```
 
 ---
@@ -546,7 +789,7 @@ model.df.study1 <- all.data.study1 %>%
 ```
 
 ##Test 1: Do subset-knowers perform significantly better than chance on this task overall?
-Yes: Significant Wald Z = 3.33, *p*= .0009
+Yes: Significant Wald Z = 3.38, *p*= .0007
 ```{r}
 #filter down to subset knowers
 subset.chance.overall <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
@@ -598,7 +841,8 @@ model.cp.study1 <- all.data.study1 %>%
          !is.na(highest_count), 
          !is.na(Correct))%>%
   mutate(highest_count = as.numeric(as.character(highest_count)), 
-          age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)))
+          age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)), 
+         highest_count.c = as.vector(scale(highest_count, center = TRUE, scale = TRUE)))
 
 #construct base model with age
 cp.subset.base <- glmer(Correct ~ age.c + (1|SID), 
@@ -610,12 +854,23 @@ cp.subset.kl <- glmer(Correct ~ CP_subset + age.c + (1|SID),
 
 #compare - does KL improve the fit of the base model? 
 anova(cp.subset.base, cp.subset.kl, test = 'LRT')
+summary(cp.subset.kl)
+.
+
+##testing for a correlation between age and knower level
+corr.ms <- all.data.study1 %>%
+  distinct(SID, Knower_level, Age)%>%
+  mutate(Knower_level = ifelse(Knower_level == "CP", 5, as.numeric(as.character(Knower_level))), 
+         kl.c = as.vector(scale(Knower_level, center = FALSE, scale = TRUE)), 
+         age.c = as.vector(scale(Age, center = FALSE, scale = TRUE)))
+
+cor.test(corr.ms$age.c, corr.ms$kl.c)
 ```
 
 ## Does counting exposure predict performance with both CP- and Subset-knowers?
 Yes; Chisq(1) = 7.97, *p* = .005
 ```{r}
-cp.hc <- glmer(Correct ~ highest_count + age.c + (1|SID), 
+cp.hc <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
                family = "binomial", data = model.cp.study1)
 
 #compare
@@ -626,13 +881,53 @@ anova(cp.subset.base, cp.hc, test = 'LRT')
 No: When added to a model containing HC, KL does not explain additional variance
 ```{r}
 ##HC gets added first because it has a lower AIC
-cp.hc.kl <- glmer(Correct ~ CP_subset +  highest_count + age.c + (1|SID), 
+cp.hc.kl <- glmer(Correct ~ CP_subset +  highest_count.c + age.c + (1|SID), 
                   family = "binomial", data = model.cp.study1)
 
 #compare
 anova(cp.hc, cp.hc.kl, test = 'LRT')
+
+###Correlation between knower-level and highest count
+#check it out
+corr.ms <- all.data.study1 %>%
+  distinct(SID, Knower_level, highest_count)%>%
+  mutate(Knower_level = ifelse(Knower_level == "CP", 5, as.numeric(as.character(Knower_level))), 
+         kl.c = as.vector(scale(Knower_level, center = FALSE, scale = TRUE)), 
+         hc.c = as.vector(scale(highest_count, center = FALSE, scale = TRUE)))
+
+cor.test(corr.ms$hc.c, corr.ms$kl.c)
 ```
 
+###For subset-knowers: T-tests against chance on Unit for each item
+```{r}
+subset.ms <- all.data.study1 %>%
+  filter(Task == "SF", 
+         CP_subset == "Subset")%>%
+  group_by(SID, Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+##1-knowers
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+
+##2-knowers
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##Significant, t(17) = 6.65, p < .0001
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+
+#3-knowers
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##Significant, t(13) = 8.83, p < .0001
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##Significant, t(13) = 3.80, p = .002
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##Marginal, t(13) = 2.12, p = .05
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+
+```
 
 ---
 
