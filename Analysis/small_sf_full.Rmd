@@ -94,6 +94,7 @@ data.raw.study2 %<>%
   mutate(Exclude_trial = ifelse(is.na(Exclude_trial), "0", as.character(Exclude_trial)))%>%
   filter(Exclude_trial != "1")
 
+
 #how many kids failed training for SF?
 #exp.1
 data.raw.study1 %>%
@@ -120,6 +121,12 @@ data.raw.study1 %<>%
 data.raw.study2 %<>%
   mutate(Trial_number = ifelse(is.na(Trial_number), "HC", as.character(Trial_number)))%>%
   filter(Trial_number != "Training")
+
+#Exclude training for NN
+data.raw.study2 %<>%
+  mutate(Trial_number = ifelse(is.na(Trial_number), "HC", as.character(Trial_number)), 
+         Exclude_NN = ifelse((Task == "Next_number" & Trial_number == "1"), 1, 0))%>%
+  filter(Exclude_NN != 1)
 ```
 
 ###Rename
@@ -353,7 +360,8 @@ all.data.study1 %>%
   geom_point(size = 2.5, 
              show.legend = FALSE) + 
   geom_line(size = .7, 
-            show.legend = FALSE) +
+            show.legend = FALSE, 
+            linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5, 
                 show.legend = FALSE) +
@@ -436,7 +444,8 @@ all.data.study2 %>%
   geom_point(size = 2.5, 
              show.legend = FALSE) + 
   geom_line(size = .7, 
-            show.legend = FALSE) +
+            show.legend = FALSE, 
+            linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5, 
                 show.legend = FALSE) +
@@ -467,17 +476,18 @@ all.data.study1 %>%
   langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
   geom_point(size = 2.5) + 
-  geom_line(size = .7) +
+  geom_line(size = .7, linetype = "dashed") +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
   theme(panel.grid = element_blank(), 
-        legend.position = "right") + 
+        legend.position = "bottom", 
+        legend.title = element_blank()) + 
   scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
   langcog::scale_color_solarized("Knower level") +
   labs(x = "Starting set size", y = "Mean Unit Task performance")
 
-ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study1_CP_subset_Unit.png", width = 6, height = 4)
+ggsave("~/Documents/Projects/small_sf/Analysis/Figures/study1_CP_subset_Unit.png", width = 5, height = 5)
 ```
 
 ##Study 2: Mean performance by CP/Subset
@@ -952,7 +962,7 @@ model.df.study2 <- all.data.study2 %>%
 ```
 
 ##Test 1: Comparison between Unit Task and Next Number performance for subset-knowers
-Yes: Subset-knowers have significantly better performance on the Unit Task in comparison to the NN task: Wald Z = 6.42, *p* < .0001
+Yes: Subset-knowers have significantly better performance on the Unit Task in comparison to the NN task: Wald Z = 7.9, *p* < .0001
 ```{r}
 #make base
 nn.v.sf.base <- glmer(Correct ~ 1 + (1|SID), 
@@ -966,7 +976,7 @@ summary(nn.v.sf.task)
 ```
 
 ##Test 2: Does Unit/NN performance differ for subset-knowers for items within count range?
-Yes, even for items within a subset-knower's knower level, performance on SF is still significantly better than performance on NN: Wald Z = 4.58, *p* < .0001. 
+Yes, even for items within a subset-knower's knower level, performance on SF is still significantly better than performance on NN: Wald Z = 5.72, *p* < .0001. 
 ```{r}
 #add a term indicating whether item is within/outside knower level
 model.df.study2.within <- model.df.study2 %>%
@@ -989,7 +999,7 @@ summary(within.nn.v.sf.task)
 
 
 ##Test 3: Do SS-knowers perform significantly better than chance on Unit Task overall?
-Yes, SS-knowers performance significantly better than chance on Unit Task overall: Wald Z = 2.38, *p* = .02
+Yes, SS-knowers performance significantly better than chance on Unit Task overall: Wald Z = 2.50, *p* = .01 
 ```{r}
 subset.sf.chance <- glmer(Correct ~ 1 + (1|SID), 
                       family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & Task == "SF"))
@@ -998,7 +1008,7 @@ summary(subset.sf.chance)
 ```
 
 ##Test 4: Do SS-knowers perform significantly better than chance on Unit for items within their knower level? 
-Yes, SS-knowers perform significantly better than chance for items within their knower level: Wald Z = 3.55, *p* = .0004
+Yes, SS-knowers perform significantly better than chance for items within their knower level: Wald Z = 3.76, *p* = .0002
 ```{r}
 subset.sf.chance.within <- glmer(Correct ~ 1 + (1|SID), 
                       family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & Task == "SF" 
@@ -1006,8 +1016,41 @@ subset.sf.chance.within <- glmer(Correct ~ 1 + (1|SID),
 summary(subset.sf.chance.within)
 ```
 
+###Follow-up tests: Looking at item-level performance, t-tests against chance
+```{r}
+study2.ms <- all.data.study2 %>%
+  filter(CP_subset == "Subset", 
+         Task == "SF", 
+         Knower_level != "4", 
+         Knower_level != "5")%>%
+  group_by(SID, Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#1-knowers
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns
+
+
+#2-knowers
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #sig, t(17) = 3.34, p = .004
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns
+
+#3-knowers
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #sig, t(7) = 2.65, p = .03
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns
+```
+
 ##Test 5: Is SS-knower Next Number performance significantly different than chance overall? 
-Yes, but it is significantly WORSE than chance overall: Wald Z = -3.89, *p* = .0001
+Yes, but it is significantly WORSE than chance overall: Wald Z = -5.16, *p* < .0001
 ```{r}
 subset.nn.chance <- glmer(Correct ~ 1 + (1|SID), 
                       family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & Task == "Next_number"))
@@ -1016,7 +1059,7 @@ summary(subset.nn.chance)
 ```
 
 ##Test 6: What about for numbers within SS-knowers' knower level? Is performance different than chance? 
-Yes, but performance is significantly worse than chance: Wald Z = -2.25, *p* = .03
+Yes, but performance is significantly worse than chance: Wald Z = -3.49, *p* = .0005
 ```{r}
 subset.nn.chance.within <- glmer(Correct ~ 1 + (1|SID), 
                       family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & Task == "Next_number" & 
@@ -1027,7 +1070,7 @@ summary(subset.nn.chance.within)
 
 ##Test 7: Comparison between CP and SS-knowers
 ###Test 7a: Unit Task 
-CP-knowers are *not* performing significantly different than SS-knowers. 
+CP-knowers are performing significantly different than SS-knowers. 
 ```{r}
 model.cp.study2 <- model.df.study2 %>%
   filter(!is.na(highest_count))
@@ -1052,7 +1095,7 @@ anova(cp.subset.base, cp.subset.hc, test = 'LRT') #highest count is not signific
 ```
 
 ###Test 7b: Next Number Task 
-CP-knowers are *not* performing significantly different than SS-knowers. 
+CP-knowers are performing significantly different than SS-knowers. 
 ```{r}
 #make base
 cp.subset.base.nn <- glmer(Correct ~ age.c + (1|SID), 
@@ -1065,10 +1108,28 @@ cp.subset.kl.nn <- glmer(Correct ~ CP_subset + age.c + (1|SID),
 
 #compare
 anova(cp.subset.base.nn, cp.subset.kl.nn, test = 'LRT') #significant
+summary(cp.subset.kl.nn)
 
 #add highest_count
 cp.subset.hc.nn <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
-                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number")) ##NB model is failing to converge
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number")) ##NB model is failing to converge, need to check if this is a big deal
+with(cp.subset.hc.nn@optinfo$derivs,max(abs(solve(Hessian,gradient)))<2e-3) #we're okay
 #compare
-anova(cp.subset.base.nn, cp.subset.hc.nn, test = 'LRT') #highest count is not significant
+anova(cp.subset.base.nn, cp.subset.hc.nn, test = 'LRT') 
+summary(cp.subset.hc.nn)
+
+##Add KL to HC model
+nn.plus.kl <-  glmer(Correct ~ CP_subset + highest_count.c + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+#compare
+anova(cp.subset.hc.nn, nn.plus.kl, test = 'LRT')
+summary(nn.plus.kl)
+```
+
+
+##Follow-up: Do CP-knowers have better performance on the Unit than NN?
+```{r}
+cp.nn.compare <- glmer(Correct ~ Task + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, CP_subset == "CP"))
+summary(cp.nn.compare)
 ```
