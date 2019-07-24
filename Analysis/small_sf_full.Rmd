@@ -745,7 +745,6 @@ all.data.study2 %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
   geom_point(size = 2.5) + 
   geom_line(size = .7) +
-  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .9) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
@@ -781,7 +780,6 @@ all.data.study2 %>%
   ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
   geom_point(size = 2.5) + 
   geom_line(size = .7) +
-  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .9) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0, size = .5) +
   theme_bw(base_size = 13) + 
@@ -1051,6 +1049,20 @@ t.test(subset(study2.ms, Knower_level == "3" & Task_item == "3")$mean, mu = .5, 
 t.test(subset(study2.ms, Knower_level == "3" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns
 t.test(subset(study2.ms, Knower_level == "3" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns
 ```
+
+##Follow-up: Are CP-knowers above chance on Unit for 4 and 5?
+```{r}
+study2.ms <- all.data.study2 %>%
+  filter(CP_subset == "CP", 
+         Task == "SF")%>%
+  group_by(SID, Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#CP, 4 and 5
+t.test(subset(study2.ms, Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns
+t.test(subset(study2.ms, Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns
+```
+
 
 ##Test 5: Is SS-knower Next Number performance significantly different than chance overall? 
 Yes, but it is significantly WORSE than chance overall: Wald Z = -5.16, *p* < .0001
