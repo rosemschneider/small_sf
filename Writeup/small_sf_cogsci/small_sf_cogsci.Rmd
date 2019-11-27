@@ -224,8 +224,9 @@ Introduction goes here!
 
 ## Method
 
-### Participants
+The methods and analyses of this study were pre-registered (https://osf.io/deqzk/?view_only=e49622708a214438bb095f18bdaa8224). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
 
+### Participants
 ```{r exp1.demos}
 exp.1.demos.age <- all.data.study1 %>%
   distinct(SID, CP_subset, Age)%>%
@@ -251,7 +252,6 @@ n.levels.exp1 <- all.data.study1 %>%
             sd_age = round(sd(Age, na.rm = TRUE),2))
 
 ```
-
 We recruited `r exp.1.demos.age$total.n[1]` participants between the ages of 2 and 4 years (`r subset(exp1.demos.sex, Sex == "F")$total.n` female, $M_{age} =$ `r round(mean(all.data.study1$Age, na.rm = TRUE), 2)`, $SD_{age} =$ `r round(sd(all.data.study1$Age, na.rm = TRUE),2)`, range $=$ `r round(min(all.data.study1$Age),2)`-`r round(max(all.data.study1$Age),2)` years) from local preschools and the surrounding community in San Diego, US. `r subset(exp.1.demos.age, CP_subset == "Subset")$n` of these children were classified as subset knowers and `r subset(exp.1.demos.age, CP_subset == "CP")$n` were classified as CP-knowers using the Give-N task. The breakdown of \emph{N}-knower level classifications is shown in \ref{tab:demos1}.
 
 \begin{table}[h]
@@ -271,11 +271,96 @@ We recruited `r exp.1.demos.age$total.n[1]` participants between the ages of 2 a
 \label{tab:demos1}
 \end{table} 
 
-### Stimuli
-
 ### Procedure
+Children were tested individually in a quiet spot within the classroom or museum or in room set apart from the classroom. Participants received the tasks in a fixed order (Unit Task, Give-N, and Highest Count).
+
+#### Unit Task 
+We assessed children’s successor function knowledge with a modified version of the Unit Task [@sarnecka2008]. The experimenter presented children with an opaque container and some small fish, saying, "This is my fish bowl and these are my fish!" The experimenter then placed between 1 and 5 fish in the bowl, briefly showed them to the child, and said, "Look, I have \emph{N} fish here. \emph{N} fish are swimming in the fish bowl."" If children tried to count during this presentation they were stopped by the experimenter. The experimenter then placed an opaque lid over the container and asked, "How many fish are in the fish bowl?" Children were given two opportunities to pass this memory check; if they failed both, the experimenter told them how many fish there were, and proceeded with the remainder of the trial.
+
+After the memory check, the experimenter said, “Now watch!”, and added one fish to the container before asking, “Are there \emph{N}+1 or \emph{N}+2 fish now?”. Order of the presented alternatives was counterbalanced across trials. If children failed to pick one of the presented alternatives, the experimenter provided the alternatives again verbally and encouraged the child to select one. 
+
+Participants completed a training trial with feedback in which only 1 fish was added to an empty bowl. Once children passed this training trial, they received 10 test trials with neutral feedback. A correct response for a given \emph{N} was \emph{N}+1. “I don’t know” responses were coded as incorrect. Only numeric responses were included in analyses; non-numeric answers were excluded. Trials were classified as either within or outside of a child’s \emph{N}-knower level (i.e., trials with 1 and 2 items were classified as “within” a 2-knower’s range). 
+
+#### Give-N
+We used a titrated version of Give-N to assess children's knower level. The experimenter provided children with 10 identical plastic objects (e.g., strawberries, bananas) and a small plastic plate. After familiarizing the child with the game, the experimenter asked them to put \emph{N} items on the plate After the child finished placing a set on the plate, the experimenter asked “Is that \emph{N}? Can you count to make sure?” If the child recognized an error, they were permitted to fix the set. 
+
+If the child succeeded on a requested \emph{N}, the experimenter requested \emph{N}+1 on the next trial, up to six items. If the child failed on a given \emph{N}, the experimenter requested \emph{N}-1 on the next trial. This pattern of titration continued until the child’s knower level could be confidently identified. Children were defined as \emph{N}-knowers if they correctly provided \emph{N} (e.g., three strawberries) on at least two out of the three trials that \emph{N} was requested, and did not give that \emph{N} more than once when asked for another number. Children who correctly generated sets of 6 at least 2 out of 3 times when requested were classified as CP-knowers. 
+
+#### Highest Count. 
+We used the Highest Count task to assess children's counting proficiency. An experimenter introduced the task to the child by saying, “In this game, I want you to count as high as you can! Can you start counting for me with \emph{one}?" 
+
+A child’s Highest Count was defined as the largest number counted to before making an error, or the point at which the child did not know how to continue. The first time a child stopped counting the experimenter prompted them, saying “Do you know what comes next?”. If a child could not continue, the task was ended. Otherwise, the child was able to continue counting until they stopped again. For example, a child who counted from 1 to 9, was prompted, and then continued to count to 19 had a highest count of 19. In comparison, a child who counted from 1 to 9, then skipped to 19 would have a highest count of 9.
 
 ## Results and Discussion
+
+```{r exp_1_unit, fig.width=3.5, fig.height=1.5, fig.align = "center", fig.cap = "Mean Unit Task performance for subset knowers in Exp. 1, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three- and 4-knowers are collapsed together due to small ns."}
+#visualization 
+all.data.study1 %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" )%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3"), "3- & 4-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3- & 4-knowers", "CP"), 
+                               labels = c("1-knowers", "2-knowers", "3- & 4-knowers", "CP-knowers")))%>%
+  filter(Task == "SF")%>%
+  group_by(Task_item, Knower_level.combined)%>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
+  geom_point(size = 1, 
+             show.legend = FALSE) + 
+  geom_line(size = .5, 
+            show.legend = FALSE) +
+  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5, 
+                show.legend = FALSE) +
+  theme_bw(base_size = 7.5) + 
+  theme(legend.position = "top", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined, ncol = 3) +
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit Task performance")
+```
+
+```{r exp_1_cp_subset, fig.width= 2.7, fig.height=1.8, fig.align = "center", fig.cap = "Mean Unit Task performance for for CP- and subset knowers in Exp. 1. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
+
+cp.subset.pal <- c("#CAB2D6", "#6A3D9A" )
+all.data.study1 %>%
+    filter(Task == "SF")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
+  group_by(Task_item, CP_subset)%>%
+   # summarise(mean = mean(Correct, na.rm = TRUE), 
+   #          n = n(), 
+   #          sd = sd(Correct, na.rm = TRUE), 
+   #          se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
+  geom_point(size = 1) + 
+  geom_line(size = .5) +
+  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 7.5) + 
+  theme(panel.grid = element_blank(), 
+        legend.position = "top", 
+        legend.title = element_blank(), 
+        legend.margin=margin(1,1,1,1),
+        legend.box.margin=margin(-7,-7,-7,-7)) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(.25, 1)) + 
+  scale_color_manual(values = cp.subset.pal) +
+  labs(x = "Starting set size", y = "Mean Unit Task performance", 
+       color = "Knower level")
+```
 
 # Experiment 2
 
@@ -328,11 +413,88 @@ We recruited `r exp.2.demos.age$total.n[1]` participants between the ages of 2 a
 \label{tab:demos2}
 \end{table} 
 
-### Stimuli
-
 ### Procedure
 
+Stimuli and methods were identical to Experiment 1 with two exceptions. First, we added the Next Number task to test whether subset knowers were drawing on their knowledge of the count list’s structure to succeed on the Unit Task. This task requires children to count up from an arbitrary point in the count list in response to a prompt (e.g., "\emph{N}, what comes next?"). The Next Number task included the same numbers as those tested in the Unit Task (1-5). Children received a training trial with 'one', during which they received feedback, and then received 10 additional trials. Items were present in a pseudo-randomzied order. As in Experiment 1, participants received the tasks in a fixed order (Unit Task, Next Number, Give-N, and Highest Count). 
+
+Second, we also controlled for the possibility that children could succeed on the Unit Task through subitizing the final set when the lid was removed to add the fish during each trial. In Experiment 2, we used a lid with a small slot through which the experimenter could insert this fish, thus preventing children from observing the final set. 
+
 ## Results and Discussion
+
+```{r exp_2_unit_nn, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for subset knowers in Exp. 2, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three-, 4-, and 5- knowers are collapsed together due to small ns."}
+task.pal <- c("#cb4b16", "#2aa198")
+
+all.data.study2 %>%
+   filter(Task == "SF" | 
+           Task == "Next_number")%>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" | 
+           Knower_level == "5")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3" | Knower_level == "5"), "3-, 4-, & 5-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3-, 4-, & 5-knowers"), 
+                               labels = c("1-knowers", "2-knowers", "3-, 4-, & 5-knowers")), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                labels = c("Next Number", "Unit Task")))%>%
+  group_by(Knower_level.combined, Task, Task_item)%>%
+  # summarise(n = n(), 
+  #           mean = mean(Correct, na.rm = TRUE), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
+  geom_point(size = 1) + 
+  geom_line(size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 7.5) + 
+  theme(legend.position = "top", 
+        panel.grid = element_blank(), 
+        legend.title = element_blank(), 
+        legend.margin=margin(1,1,1,1),
+        legend.box.margin=margin(-7,-7,-7,-7)) + 
+  facet_wrap(~Knower_level.combined) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_manual(values = task.pal)+ 
+  labs(x = "Number queried", y = "Mean task performance")
+```
+
+```{r exp_2_cp_sub, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for CP- and subset knowers in Exp. 2. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
+all.data.study2 %>%
+   filter(Task == "SF" | 
+           Task == "Next_number")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                labels = c("Next Number", "Unit Task")), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
+  group_by(CP_subset, Task, Task_item)%>%
+  # summarise(n = n(), 
+  #           mean = mean(Correct, na.rm = TRUE), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Task, group= Task)) +
+  geom_point(size = 1) + 
+  geom_line(size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size =7.5) + 
+  theme(
+        panel.grid = element_blank(), 
+        legend.position = "top", 
+        legend.title = element_blank(), 
+        legend.margin=margin(1,1,1,1),
+        legend.box.margin=margin(-7,-7,-7,-7)) + 
+  facet_wrap(~CP_subset) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_manual(values = task.pal)+ 
+  labs(x = "Number queried", y = "Mean task performance")
+```
 
 # General Discussion
 
