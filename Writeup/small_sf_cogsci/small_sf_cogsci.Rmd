@@ -216,6 +216,37 @@ all.data.study2 %<>%
                             "Subset"))
 ```
 
+```{r highest_count}
+##add highest count as a column
+#study 1
+hc.lookup <- all.data.study1 %>%
+  filter(Task == "Highest_count")%>%
+  dplyr::rename(highest_count = Response)%>%
+  dplyr::select(SID, highest_count)
+
+all.data.study1 <- right_join(all.data.study1, hc.lookup, by = "SID")
+
+#HCs are being read in as factors - change to numeric
+all.data.study1 %<>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+
+#one kid didn't do highest count, so we will exclude them from analyses containing hc
+
+#study 2
+hc.lookup <- all.data.study2 %>%
+  filter(Task == "Highest_count")%>%
+  dplyr::rename(highest_count = Response)%>%
+  dplyr::select(SID, highest_count)
+
+all.data.study2 <- right_join(all.data.study2, hc.lookup, by = "SID")
+
+#HCs are being read in as factors - change to numeric
+all.data.study2 %<>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+
+#one kid didn't do highest count, so we will exclude them from analyses containing hc
+```
+
 # Introduction
 
 Introduction goes here!
@@ -293,6 +324,89 @@ A child’s Highest Count was defined as the largest number counted to before ma
 
 ## Results and Discussion
 
+```{r model_setup_exp1, include = FALSE}
+model.df.study1 <- all.data.study1 %>%
+  filter(Task == "SF", 
+         !is.na(Correct))%>%
+  mutate(highest_count = as.numeric(as.character(highest_count)))
+```
+
+```{r ss_exp_1_chance, include = FALSE}
+##DO SS KNOWERS PERFORM SIGNIFICANTLY ABOVE CHANCE
+#filter down to subset knowers
+
+subset.chance.model <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
+                               data = subset(model.df.study1, CP_subset == "Subset"))
+subset.chance.overall <- summary(subset.chance.model)
+
+```
+
+```{r ss_exp_1_kl, include = FALSE}
+##DO SS KNOWERS PERFORM ABOVE CHANCE WITHIN KL
+##add to model.df whether a trial was within or outside knower level 
+model.df.study1.within <- model.df.study1 %>%
+  filter(CP_subset != "CP")%>%
+  mutate(within_kl = ifelse(Task_item <= as.numeric(as.character(Knower_level)), "Within", "Outside"))
+
+subset.chance.within.kl <- glmer(Correct ~ 1 + (1|SID), family = "binomial", 
+                                 data = subset(model.df.study1.within, within_kl == "Within"))
+
+subset.chance.within.kl.sum <- summary(subset.chance.within.kl)
+
+```
+
+```{r ss_exp_1_hc, include = FALSE}
+##DO SS KNOWERS WITH HIGHER HC PERFORM BETTER
+##get highest count for each kid, add to model.df 
+subset.hc <- glmer(Correct ~ highest_count + (1|SID), 
+                   family = "binomial", data = subset(model.df.study1, CP_subset == "Subset"))
+
+#compare to base
+hc.ss.anova <- anova(subset.chance.model, subset.hc, test = 'LRT')
+
+##WHAT ABOUT WITHIN THEIR KL
+subset.hc.within <- glmer(Correct ~ highest_count + (1|SID), 
+                          family = "binomial", data = subset(model.df.study1.within, within_kl == "Within"))
+
+#lrt to compare
+anova(subset.chance.within.kl, subset.hc.within, test = 'LRT')
+```
+
+Our primary question in this work was whether subset knowers were able to pass the Unit Task for numbers within their known number range, despite not yet having acquired the CP. To test this, we built a null GLMEM with subset-knower data predicting Unit Task performance, with a random effect of subject. This model indicated that subset knowers’ performance on this task was significantly different from chance (Wald \emph{Z} $=$ `r round(subset.chance.overall$coefficients[3], 2)`, $p =$ .0007), with generally accurate performance ($\beta$ $=$ `r round(subset.chance.overall$coefficients[1], 2)`). We next tested whether performance was significantly different than chance for numbers within subset knowers’ known number ranges by again building a null GLMEM, using data only from trials that were within subset knowers’ known range. Once again, we found that performance was significantly different than chance (Wald \emph{Z} $=$ `r round(subset.chance.within.kl.sum$coefficients[3], 2)`, $p$ < .0001), with higher accuracy for items which were within subset knowers' known range ($\beta$ = `r round(subset.chance.within.kl.sum$coefficients[1], 2)`). 
+
+```{r exp_1_t_tests, include = FALSE}
+subset.ms <- all.data.study1 %>%
+  filter(Task == "SF", 
+         CP_subset == "Subset")%>%
+  group_by(SID, Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+##1-knowers
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "1" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+
+##2-knowers
+two_knower.t.1 <- t.test(subset(subset.ms, Knower_level == "2" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##Significant, t(17) = 6.65, p < .0001
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "2" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+
+#3-knowers
+three_t.test.1 <- t.test(subset(subset.ms, Knower_level == "3" & Task_item == 1)$mean, mu = .5, var.equal = TRUE) ##Significant, t(13) = 8.83, p < .0001
+three_t.test.2 <- t.test(subset(subset.ms, Knower_level == "3" & Task_item == 2)$mean, mu = .5, var.equal = TRUE) ##Significant, t(13) = 3.80, p = .002
+three_t.test.3 <- t.test(subset(subset.ms, Knower_level == "3" & Task_item == 3)$mean, mu = .5, var.equal = TRUE) ##Marginal, t(13) = 2.12, p = .05
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 4)$mean, mu = .5, var.equal = TRUE) ##NS
+t.test(subset(subset.ms, Knower_level == "3" & Task_item == 5)$mean, mu = .5, var.equal = TRUE) ##NS
+```
+
+\ref{fig:exp_1_unit} shows \emph{N}-knowers' performance on each queried item. Follow-up analyses testing N-knowers’ mean performance for individual task items against chance ($\mu$ = .5), indicated that while subset knowers’ Unit Task performance is significantly above chance levels overall, it seems that performance for small numbers increases gradually as children learn the meanings of more number words. These follow-up analyses revealed above-chance performance for 2-knowers with sets of 1 (\emph{t}(17) = `r round(two_knower.t.1$statistic, 2)`, $p$ < .0001), and for 3-knowers with sets of 1 (\emph{t}(13) = `r round(three_t.test.1$statistic, 2)`, $p$ < .0001), 2 (\emph{t}(13) = `r round(three_t.test.2$statistic, 2)`, $p$ $=$ .002), and 3 (\emph{t}(13) = `r round(three_t.test.3$statistic, 2)`, $p =$ .05). 
+
+We also tested whether subset knowers' Unit Task performance is related to their counting knowledge by constructing another GLMEM predicting subset knowers' Unit Task performance from their highest count (centered and scaled), with a random effect of participant. A Likelihood Ratio Test between this model and a null model indicated that the addition of the highest count term did not significantly improve the fit of the model for either overall performance ($\chi^2$ $=$ `r round(hc.ss.anova$Chisq[2],2)`, $p$ $=$ 0.45, or for numbers falling within a child’s known number range ($\chi^2$ $=$ 0.65, p = 0.42). Thus, it does not appear that subset knowers’ Unit Task performance is related to their knowledge of the count list. 
+
 ```{r exp_1_unit, fig.width=3.5, fig.height=1.5, fig.align = "center", fig.cap = "Mean Unit Task performance for subset knowers in Exp. 1, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three- and 4-knowers are collapsed together due to small ns."}
 #visualization 
 all.data.study1 %>%
@@ -328,6 +442,32 @@ all.data.study1 %>%
   langcog::scale_color_solarized("Knower level") +
   labs(x = "Starting set size", y = "Mean Unit Task performance")
 ```
+
+```{r cp_subset, include = FALSE}
+###TESTING FOR DIFFERENCE BETWEEN CP AND SUBSET KNOWERS
+model.cp.study1 <- all.data.study1 %>%
+  filter(Task == "SF", 
+         !is.na(highest_count), 
+         !is.na(Correct))%>%
+  mutate(highest_count = as.numeric(as.character(highest_count)), 
+          age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)), 
+         highest_count.c = as.vector(scale(highest_count, center = TRUE, scale = TRUE)))
+
+#construct base model with age
+cp.subset.base <- glmer(Correct ~ age.c + (1|SID), 
+                        family = "binomial", data = model.cp.study1)
+
+#add knower level - does this explain additional variance?
+cp.subset.kl <- glmer(Correct ~ CP_subset + age.c + (1|SID), 
+                      family = "binomial", data = model.cp.study1)
+
+#compare - does KL improve the fit of the base model? 
+anova(cp.subset.base, cp.subset.kl, test = 'LRT')
+cp.subset.kl.sum <- summary(cp.subset.kl)
+```
+
+Finally, we tested whether, consistent with previous work [@sarnecka2008; @spaepen2018], we find evidence that CP-knowers have significantly more accurate Unit Task performance than subset-knowers overall. A GLMEM predicting Unit Task performance from CP-knower status and age with a random effect of participant indicated that subset knowers were significantly less accurate in the Unit Task in comparison to CP-knowers (`r round(cp.subset.kl.sum$coefficients[2], 2)`, $p =$ .02), as shown in \ref{fig:exp_1_cp_subset}. 
+
 
 ```{r exp_1_cp_subset, fig.width= 2.7, fig.height=1.8, fig.align = "center", fig.cap = "Mean Unit Task performance for for CP- and subset knowers in Exp. 1. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
 
@@ -421,6 +561,70 @@ Second, we also controlled for the possibility that children could succeed on th
 
 ## Results and Discussion
 
+```{r exp_2_model, include= FALSE}
+##This is for Next number AND SF analyses
+model.df.study2 <- all.data.study2 %>%
+  filter(Task == "SF" | 
+           Task == "Next_number", 
+         !is.na(Correct))%>%
+  mutate(highest_count = as.numeric(as.character(highest_count)), 
+         age.c = as.vector(scale(Age, center = TRUE, scale=TRUE)), 
+         highest_count.c = as.vector(scale(highest_count, center = TRUE, scale = TRUE)))
+```
+
+```{r nn_vs_unit, include = FALSE}
+###COMPARING NN VS UNIT FOR SS OVERALL
+
+#make base
+nn.v.sf.base <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset"))
+#add task
+nn.v.sf.task <- glmer(Correct ~ Task + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset"))
+#compare
+anova(nn.v.sf.base, nn.v.sf.task, test= 'LRT')#significant
+subset.nn.unit <- summary(nn.v.sf.task)
+```
+
+```{r nn_unit_within, include = FALSE}
+###TESTING WHETHER NN AND UNIT DIFFER FOR ITEMS WITHIN KL
+#add a term indicating whether item is within/outside knower level
+model.df.study2.within <- model.df.study2 %>%
+  mutate(within_kl = ifelse(Task_item <= as.numeric(as.character(Knower_level)), "Within", "Outside"), 
+         within_kl = factor(within_kl))
+
+#make base
+within.nn.v.sf.base <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & 
+                                                         within_kl == "Within"))
+#add task
+within.nn.v.sf.task <- glmer(Correct ~ Task + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & 
+                                                         within_kl == "Within"))
+#compare
+anova(within.nn.v.sf.base, within.nn.v.sf.task, test= 'LRT') # significant
+nn.unit.subset.within <- summary(within.nn.v.sf.task)
+
+```
+
+```{r ss_unit_exp2, include = FALSE}
+##SS UNIT CHANCE TEST
+subset.sf.chance <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2, CP_subset == "Subset" & Task == "SF"))
+
+subset.unit.exp2 <- summary(subset.sf.chance)
+```
+
+```{r ss_unit_exp2_within, include = FALSE}
+##SS UNIT WITHIN CHANCE TEST
+subset.sf.chance.within <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.study2.within, CP_subset == "Subset" & Task == "SF" 
+                                                         & within_kl == "Within"))
+subset.unit.known.exp2 <- summary(subset.sf.chance.within)
+```
+
+Our primary question in Experiment 2 was whether subset knowers' above-chance performance on the Unit Task was due to their knowledge of the count list's structure. We tested this possible mechanism of Unit Task success by comparing subset knowers' performance on the Unit and Next Number tasks. First, we replicated our finding that subset knowers demonstrate above-chance Unit Task performance overall (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .012), and that this effect was driven by numbers within their known number range (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .0002). Critically, however, subset knowers' Next Number performance was significantly lower than Unit Task performance both overall ($\beta =$ -`r round(subset.nn.unit$coefficients[2,1], 2)`, $p$ < .0001), and even for numbers within their known number range ($\beta =$ `r round(nn.unit.subset.within$coefficients[2,1], 2)`, $p$ < .0001), as shown in \ref{fig:exp_2_unit.nn}. This difference in performance between the Unit and Next Number tasks suggest that subset knowers are not drawing upon their knowledge of the count list to reason about successor relations for small numbers, but may instead be mappings between small set representations stored in working memory and known number words.
+
 ```{r exp_2_unit_nn, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for subset knowers in Exp. 2, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three-, 4-, and 5- knowers are collapsed together due to small ns."}
 task.pal <- c("#cb4b16", "#2aa198")
 
@@ -461,6 +665,16 @@ all.data.study2 %>%
   scale_color_manual(values = task.pal)+ 
   labs(x = "Number queried", y = "Mean task performance")
 ```
+
+```{r, cp_nn_compare, include = FALSE}
+model.cp.study2 <- model.df.study2 %>%
+  filter(!is.na(highest_count))
+cp.nn.compare <- glmer(Correct ~ Task + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, CP_subset == "CP"))
+cp.nn.sum <- summary(cp.nn.compare)
+```
+
+In contrast, we found no difference in CP-knowers' Unit and Next Number performance ($\beta =$ `r round(cp.nn.sum$coefficients[2,1], 2)`, $p =$ .21), as shown in \ref{fig:exp_2_cp_sub}.
 
 ```{r exp_2_cp_sub, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for CP- and subset knowers in Exp. 2. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
 all.data.study2 %>%
