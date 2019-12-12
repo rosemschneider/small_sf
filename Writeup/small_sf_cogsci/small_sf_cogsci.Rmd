@@ -249,13 +249,13 @@ all.data.study2 %<>%
 
 # Introduction
 
-Introduction goes here!
+In the course of learning about number, most children come to understand that the natural numbers are endless. While there are many potential paths to knowledge of numerical infinity (CITATIONS), one proposed mechanism is acquiring knowledge of the successor function [@cheung2017]. Although having some knowledge of this recursive function -- that every number \emph{n} has a successor, \emph{n}+1 -- does not necessarily entail understanding the infinite nature of number, it is a property of the integers which nevertheless logically guarantees their infinity. Supporting this hypothesis, recent work has found that children's knowledge of the successor function is generally correlated with their intuitions about infinity and the endlessness of numbers [@cheung2017] (CHU, under review - add citation). This work has found that, far from reflecting a generalized principle, children's successor knowledge is strikingly limited for several years; that is, even after becoming competent counters, children are only able to reason about successor relations for a fraction of the number words they know and produce. In this work, we explore the nature of this limited successor knowledge and the mechanisms that children may use to begin acquiring this logical principle. In particular, <<SPECIFIC QUESTION RE: MECHANISM AND SUBSET KNOWERS>>.
 
 # Experiment 1
 
 ## Method
 
-The methods and analyses of this study were pre-registered (https://osf.io/deqzk/?view_only=e49622708a214438bb095f18bdaa8224). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
+The methods and analyses for both Experiments 1 and 2 were pre-registered (https://osf.io/deqzk/?view_only=e49622708a214438bb095f18bdaa8224). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
 
 ### Participants
 ```{r exp1.demos}
@@ -466,8 +466,20 @@ anova(cp.subset.base, cp.subset.kl, test = 'LRT')
 cp.subset.kl.sum <- summary(cp.subset.kl)
 ```
 
-Finally, we tested whether, consistent with previous work [@sarnecka2008; @spaepen2018], we find evidence that CP-knowers have significantly more accurate Unit Task performance than subset-knowers overall. A GLMEM predicting Unit Task performance from CP-knower status and age with a random effect of participant indicated that subset knowers were significantly less accurate in the Unit Task in comparison to CP-knowers (`r round(cp.subset.kl.sum$coefficients[2], 2)`, $p =$ .02), as shown in \ref{fig:exp_1_cp_subset}. 
+```{r cp_chance, include = FALSE}
+###are cp-knowers performing above chance for 4 and 5? 
+cp.ms <- all.data.study1 %>%
+  filter(Task == "SF", 
+         CP_subset == "CP")%>%
+  group_by(SID, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))%>%
+  ungroup()
 
+cp.unit.t.test.4 <- t.test(subset(cp.ms, Task_item == 4)$mean, mu = .5, var.equal = TRUE)#nope
+cp.unit.t.test.5 <- t.test(subset(cp.ms, Task_item == 5)$mean, mu = .5, var.equal = TRUE)#nope
+```
+
+Finally, we tested whether, consistent with previous work [@sarnecka2008; @spaepen2018], we find evidence that CP-knowers have significantly more accurate Unit Task performance than subset-knowers overall. A GLMEM predicting Unit Task performance from CP-knower status and age with a random effect of participant indicated that subset knowers were significantly less accurate in the Unit Task in comparison to CP-knowers (`r round(cp.subset.kl.sum$coefficients[2], 2)`, $p =$ .02), as shown in \ref{fig:exp_1_cp_subset}. Although CP-knowers had significantly greater Unit Task performance in comparsion to subset knowers, their performance was compatible with the hypothesis that even acquiring the CP does not guarantee implicit successor knowledge [@davidson2012; @cheung2017; @spaepen2018], as CP-knowers did not perform significantly different than chance for sets of either 4 (`r round(cp.unit.t.test.4$statistic, 2)`, $p =$  `r round(cp.unit.t.test.4$p.value, 2)`) or 5 (`r round(cp.unit.t.test.5$statistic, 2)`, $p =$  `r round(cp.unit.t.test.5$p.value, 2)`).
 
 ```{r exp_1_cp_subset, fig.width= 2.7, fig.height=1.8, fig.align = "center", fig.cap = "Mean Unit Task performance for for CP- and subset knowers in Exp. 1. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
 
@@ -623,7 +635,7 @@ subset.sf.chance.within <- glmer(Correct ~ 1 + (1|SID),
 subset.unit.known.exp2 <- summary(subset.sf.chance.within)
 ```
 
-Our primary question in Experiment 2 was whether subset knowers' above-chance performance on the Unit Task was due to their knowledge of the count list's structure. We tested this possible mechanism of Unit Task success by comparing subset knowers' performance on the Unit and Next Number tasks. First, we replicated our finding that subset knowers demonstrate above-chance Unit Task performance overall (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .012), and that this effect was driven by numbers within their known number range (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .0002). Critically, however, subset knowers' Next Number performance was significantly lower than Unit Task performance both overall ($\beta =$ -`r round(subset.nn.unit$coefficients[2,1], 2)`, $p$ < .0001), and even for numbers within their known number range ($\beta =$ `r round(nn.unit.subset.within$coefficients[2,1], 2)`, $p$ < .0001), as shown in \ref{fig:exp_2_unit.nn}. This difference in performance between the Unit and Next Number tasks suggest that subset knowers are not drawing upon their knowledge of the count list to reason about successor relations for small numbers, but may instead be mappings between small set representations stored in working memory and known number words.
+Our primary question in Experiment 2 was whether subset knowers' above-chance performance on the Unit Task was due to their knowledge of the count list's structure. We tested this by comparing subset knowers' performance on the Unit and Next Number tasks. First, we replicated our finding that subset knowers demonstrate above-chance Unit Task performance overall (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .012), and that this effect was driven by numbers within their known number range (Wald \emph{Z} $=$ `r round(subset.unit.exp2$coefficients[3], 2)`, $p =$ .0002). Critically, however, subset knowers' Next Number performance was significantly lower than Unit Task performance both overall ($\beta =$ -`r round(subset.nn.unit$coefficients[2,1], 2)`, $p$ < .0001), as well as for numbers within their known number range ($\beta =$ `r round(nn.unit.subset.within$coefficients[2,1], 2)`, $p$ < .0001), as shown in \ref{fig:exp_2_unit.nn}. This difference in performance between the Unit and Next Number tasks suggest that subset knowers are not drawing upon their knowledge of the count list to reason about successor relations for small numbers, but may instead be mappings between small set representations stored in working memory and known number words.
 
 ```{r exp_2_unit_nn, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for subset knowers in Exp. 2, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three-, 4-, and 5- knowers are collapsed together due to small ns."}
 task.pal <- c("#cb4b16", "#2aa198")
@@ -667,14 +679,76 @@ all.data.study2 %>%
 ```
 
 ```{r, cp_nn_compare, include = FALSE}
+####UNIT NN COMPARISON####
 model.cp.study2 <- model.df.study2 %>%
   filter(!is.na(highest_count))
 cp.nn.compare <- glmer(Correct ~ Task + (1|SID), 
                        family = "binomial", data = subset(model.cp.study2, CP_subset == "CP"))
 cp.nn.sum <- summary(cp.nn.compare)
+
+##UNIT##
+cp.unit.base <- glmer(Correct ~ age.c + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, Task == "SF"))
+#now add CP-subset for comparison
+cp.unit.compare <- glmer(Correct ~ factor(CP_subset, levels = c("Subset", "CP")) + age.c + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, Task == "SF"))
+#compare
+anova(cp.unit.base, cp.unit.compare, test= 'LRT')#significant
+cp.unit.2 <- summary(cp.unit.compare)
+
+#highest count with unit
+cp.unit.hc.base <- glmer(Correct ~ age.c + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, Task == "SF" & CP_subset == "CP"))
+cp.unit.hc. <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
+                       family = "binomial", data = subset(model.cp.study2, Task == "SF" & CP_subset == "CP"))
+#compare
+anova(cp.unit.hc.base, cp.unit.hc., test = 'LRT')
+
+####Next Number####
+#make base
+cp.subset.base.nn <- glmer(Correct ~ age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+
+
+#add cp_subset
+cp.subset.kl.nn <- glmer(Correct ~ factor(CP_subset, levels = c("Subset", "CP")) + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+#compare
+anova(cp.subset.base.nn, cp.subset.kl.nn, test = 'LRT')
+cp.nn.2 <- summary(cp.subset.kl.nn)
+
+#add highest_count
+cp.subset.hc.nn <- glmer(Correct ~ highest_count.c + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number")) ##NB model is failing to converge, need to check if this is a big deal
+with(cp.subset.hc.nn@optinfo$derivs,max(abs(solve(Hessian,gradient)))<2e-3) #we're okay
+#compare
+anova(cp.subset.base.nn, cp.subset.hc.nn, test = 'LRT') #hc significantly adds to base model
+summary(cp.subset.hc.nn)
+
+##Add KL to HC model
+nn.plus.kl <-  glmer(Correct ~ CP_subset + highest_count.c + age.c + (1|SID), 
+                      family = 'binomial', data = subset(model.cp.study2, Task == "Next_number"))
+#compare
+anova(cp.subset.hc.nn, nn.plus.kl, test = 'LRT') #cp and NN
+summary(nn.plus.kl)
 ```
 
-In contrast, we found no difference in CP-knowers' Unit and Next Number performance ($\beta =$ `r round(cp.nn.sum$coefficients[2,1], 2)`, $p =$ .21), as shown in \ref{fig:exp_2_cp_sub}.
+```{r cp_chance.2, include = FALSE}
+###are cp-knowers performing above chance for 4 and 5? 
+cp.ms <- all.data.study2 %>%
+  filter(Task == "SF", 
+         CP_subset == "CP")%>%
+  group_by(SID, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))%>%
+  ungroup()
+
+cp.unit.t.test.4.2 <- t.test(subset(cp.ms, Task_item == 4)$mean, mu = .5, var.equal = TRUE)#nope
+cp.unit.t.test.5.2 <- t.test(subset(cp.ms, Task_item == 5)$mean, mu = .5, var.equal = TRUE)#nope
+```
+
+We next tested whether there was evidence that CP-knowers drew upon their knowledge of the count list in solving the Unit Task. First, we found that CP-knowers performed significantly better than subset knowers on the Unit Task ($\beta =$ `r round(cp.unit.2$coefficients[2,1], 2)`, $p =$ .002) as well as the Next Number Task ($\beta =$ `r round(cp.nn.2$coefficients[2,1], 2)`, $p <$ .0001). As in Experiment 1, however, we again found that CP-knowers were at chance on the Unit Task for sets of 4 (`r round(cp.unit.t.test.4.2$statistic, 2)`, $p =$  `r round(cp.unit.t.test.4.2$p.value, 2)`) and 5 (`r round(cp.unit.t.test.5.2$statistic, 2)`, $p =$  `r round(cp.unit.t.test.5.2$p.value, 2)`). 
+
+We then tested contrast our findings in subset knowers, we found no difference in CP-knowers' Unit Task and Next Number performance ($\beta =$ `r round(cp.nn.sum$coefficients[2,1], 2)`, $p =$ .21), as shown in \ref{fig:exp_2_cp_sub}. Thus, we did find some evidence that CP-knowers who have access to the ordinal structure of the count list may be able to recruit this knowledge when reasoning about successor relations for these small numbers.
 
 ```{r exp_2_cp_sub, fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for CP- and subset knowers in Exp. 2. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
 all.data.study2 %>%
