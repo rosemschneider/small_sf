@@ -10,15 +10,7 @@ author-information: >
     <!-- ^2 School of Speech, Language, and Hearing Sciences, San Diego State University} -->
 
 abstract: >
-    Include no author information in the initial submission, to facilitate
-    blind review.  The abstract should be one paragraph, indented 1/8 inch on both sides,
-    in 9~point font with single spacing. The heading 'Abstract'
-    should be 10~point, bold, centered, with one line of space below
-    it. This one-paragraph abstract section is required only for standard
-    six page proceedings papers. Following the abstract should be a blank
-    line, followed by the header 'Keywords' and a list of
-    descriptive keywords separated by semicolons, all in 9~point font, as
-    shown below.
+    The successor function -- a recursive function *S* which states that for every natural number *n*, *S(n)* = *n*+1 -- underlies our understanding of the natural numbers as an infinite class. Recent work has found that acquisition of this logical property is surprisingly protracted, completed several years after children master the counting procedure. While such work links successor knowledge with counting mastery, the exact processes underlying this developmental transition remain unclear. Here, we examined two possible mechanisms: (1) recursive counting knowledge, and (2) formal training with the ``+1'' rule in arithmetic. We find that while both recursive counting and arithmetic mastery predict successor knowledge, arithmetic performance is significantly lower than measures of recursive counting for all children. This dissociation suggests children do not generalize the successor function from trained mathematics; rather, we find evidence consistent with the hypothesis that successor knowledge is supported by the extraction of recursive counting rules.
     
 keywords: >
     Add your choice of indexing terms or keywords; kindly use a semi-colon; between each term.
@@ -248,13 +240,20 @@ all.data.study2 %<>%
 ```
 
 # Introduction
+In the course of learning about number, many children come to understand that every number is immediately succeeded by another, and that each of these +1 increases in quantity are accompanied by a +1 increased in the count list. In the US, children seem to acquire a generalized understanding of this \emph{successor function} around the age of 6 [@cheung2017; @davidson2012], with some arguing that this logical principle may fuel children's intuitions about numerical infinity [@cheung2017](CHU, citation). Acquiring knowledge of the successor function is gradual, however, and is strikingly limited for several years. For instance, many children who are otherwise competent counters have scattered knowledge of this logical principle, and are only able to reason about successor relations for a subset of the numbers within their count list [@cheung2017;@davidson2012;@sarnecka2008;@spaepen2018]. While there has been a growing body of research on the development and generalization of children's successor knowledge, there has been comparatively work exploring this early item-based successor knowledge. In the current work, we investigate the origins of children's successor knowledge, and explore the mechanisms by which children may begin to construct networks of localized successor relations, even before they fully understand the counting system. 
 
-In the course of learning about number, most children come to understand that the natural numbers are endless. While there are many potential paths to knowledge of numerical infinity (CITATIONS), one proposed mechanism is acquiring knowledge of the successor function [@cheung2017]. Although having some knowledge of this recursive function -- that every number \emph{n} has a successor, \emph{n}+1 -- does not necessarily entail understanding the infinite nature of number, it is a property of the integers which nevertheless logically guarantees their infinity. Supporting this hypothesis, recent work has found that children's knowledge of the successor function is generally correlated with their intuitions about infinity and the endlessness of numbers [@cheung2017] (CHU, under review - add citation). This work has found that, far from reflecting a generalized principle, children's successor knowledge is strikingly limited for several years; that is, even after becoming competent counters, children are only able to reason about successor relations for a fraction of the number words they know and produce. In this work, we explore the nature of this limited successor knowledge and the mechanisms that children may use to begin acquiring this logical principle. In particular, <<SPECIFIC QUESTION RE: MECHANISM AND SUBSET KNOWERS>>.
+Similar to the successor function, the majority of children's other numerical knowledge initially begins as limited and item-based. While most US children are able to recite portions of the count list by around 2 years of age [@fuson1988], it is not until around 2.5 years that they begin to understand a meaning of a subset of those number words [@wynn1990]. Even after children become "subset knowers" [@wynn1990; @wynn1992], children acquire these meanings in isolation; e.g., a one-knower might know the meaning of \emph{one} while having no knowledge of \emph{two}. Most children learn the first several number words in isolation, until around the age of about 4 years. At this point, children suddenly seem to understand the connection between the cardinalities represented by number words and the count list which contains them -- that is, they understand how the last word said while counting indicates the cardinality of a set, i.e., the Cardinal Principle (or CP, @gelman1978). 
+
+After acquiring the CP, children's knowledge of the successor function is far from generalized. In fact, many young CP-knowers are unable to judge whether the result of adding 1 item to sets of 4, 5, or 6 (numbers that are well within their count range) in a paradigm known as the "Unit Task" should be labeled by \emph{n}+1 or \emph{n}+2 [@sarnecka2008;@spaepen2018] (SELLA). Intriguingly, children do not reliably succeed for a large range of numbers on the Unit Task until they are extremely proficient counters [@cheung2017]; prior to demonstrating mastery of the count routine, many CP-knowers exhibit item-based successor knowledge; that is, they may be able to pass the Unit Task for some numbers in their count range while failing on others [@davidson2012]. @davidson2012 proposed that children may initially begin learning about the successor function by first establishing a network of localized successor relations, while @cheung2017 hypothesized that children may drawn upon the productive structure of the count list to extract a generalized understanding of the successor function. 
+
+While there is growing evidence that learning the recursive nature of the count list (SCHNEIDER cites) is linked to acquiring generalized knowledge of the succcessor function, it is unclear how children may first start to establish item-based successor relations for specific, familiar numbers. Some argue that children do so by leveraging their knowledge of the ordinal structure of the count list [@spaepen2018;@sarnecka2008;@carey2009]. Because on this account children need to know both meanings of number words \emph{and} their relationship to the count list, acquiring the CP is a necessary prerequisite for success on the Unit Task; that is, the CP is a "gatekeeper" for other numerical knowledge [@spaepen2018]. 
+
+On the other hand, children's item-based Unit Task success may not necessarily depend on having acquired the CP. The fact that children's early successor knowledge is initially specific for more familiar numbers leaves open the possibility that subset-knowers may be able to succeed on the Unit Task for numbers for which they have established meanings ("one", "two", and "three"). There is evidence that subset knowers are able to perform the basic set operations to succeed on the Unit Task, even without having access to the count lists' ordinal structure. For example, @hughes1981 found that children as young as 3 years were able to succeed on a paradigm similar to the Unit Task for small numbers (1, 2, and 3). (SELLA???) While previous work has found that subset knowers perform worse on the Unit Task in comparison to CP-knowers [@spaepen2018; @sarnecka2008], it is possible that this may be because the numbers on which they are being tested fall outside their known number range. 
+
+In the current work, we tested these two hypotheses by exploring subset knowers’ knowledge of successor relations for very small sets (1 - 5). In Experiment 1, we asked whether subset knowers’ Unit Task performance was significantly above chance within their knower-level.In Experiment 2 we explored subset knowers’ successor knowledge in relation to their understanding of the count list in an effort to determine the mechanism through which they may be able to reason about successor relations for known number words. 
 
 # Experiment 1
-
 ## Method
-
 The methods and analyses for both Experiments 1 and 2 were pre-registered (https://osf.io/deqzk/?view_only=e49622708a214438bb095f18bdaa8224). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
 
 ### Participants
@@ -322,7 +321,6 @@ We used the Highest Count task to assess children's counting proficiency. An exp
 
 A child’s Highest Count was defined as the largest number counted to before making an error, or the point at which the child did not know how to continue. The first time a child stopped counting the experimenter prompted them, saying “Do you know what comes next?”. If a child could not continue, the task was ended. Otherwise, the child was able to continue counting until they stopped again. For example, a child who counted from 1 to 9, was prompted, and then continued to count to 19 had a highest count of 19. In comparison, a child who counted from 1 to 9, then skipped to 19 would have a highest count of 9.
 
-## Results and Discussion
 
 ```{r model_setup_exp1, include = FALSE}
 model.df.study1 <- all.data.study1 %>%
@@ -372,6 +370,7 @@ subset.hc.within <- glmer(Correct ~ highest_count + (1|SID),
 anova(subset.chance.within.kl, subset.hc.within, test = 'LRT')
 ```
 
+## Results and Discussion
 Our primary question in this work was whether subset knowers were able to pass the Unit Task for numbers within their known number range, despite not yet having acquired the CP. To test this, we built a null GLMEM with subset-knower data predicting Unit Task performance, with a random effect of subject. This model indicated that subset knowers’ performance on this task was significantly different from chance (Wald \emph{Z} $=$ `r round(subset.chance.overall$coefficients[3], 2)`, $p =$ .0007), with generally accurate performance ($\beta$ $=$ `r round(subset.chance.overall$coefficients[1], 2)`). We next tested whether performance was significantly different than chance for numbers within subset knowers’ known number ranges by again building a null GLMEM, using data only from trials that were within subset knowers’ known range. Once again, we found that performance was significantly different than chance (Wald \emph{Z} $=$ `r round(subset.chance.within.kl.sum$coefficients[3], 2)`, $p$ < .0001), with higher accuracy for items which were within subset knowers' known range ($\beta$ = `r round(subset.chance.within.kl.sum$coefficients[1], 2)`). 
 
 ```{r exp_1_t_tests, include = FALSE}
@@ -566,7 +565,6 @@ We recruited `r exp.2.demos.age$total.n[1]` participants between the ages of 2 a
 \end{table} 
 
 ### Procedure
-
 Stimuli and methods were identical to Experiment 1 with two exceptions. First, we added the Next Number task to test whether subset knowers were drawing on their knowledge of the count list’s structure to succeed on the Unit Task. This task requires children to count up from an arbitrary point in the count list in response to a prompt (e.g., "\emph{N}, what comes next?"). The Next Number task included the same numbers as those tested in the Unit Task (1-5). Children received a training trial with 'one', during which they received feedback, and then received 10 additional trials. Items were present in a pseudo-randomzied order. As in Experiment 1, participants received the tasks in a fixed order (Unit Task, Next Number, Give-N, and Highest Count). 
 
 Second, we also controlled for the possibility that children could succeed on the Unit Task through subitizing the final set when the lid was removed to add the fish during each trial. In Experiment 2, we used a lid with a small slot through which the experimenter could insert this fish, thus preventing children from observing the final set. 
@@ -785,6 +783,19 @@ all.data.study2 %>%
 ```
 
 # General Discussion
+For several years before children are able to explicitly state that it is possible to add 1 to any number, they seem to have fragmented knowledge of the successor function, successfully implementing it for some familiar numbers, yet failing for others [@davidson2012]. How does this item-based knowledge arise, and what is its relationship to a fully abstracted understanding of this logical principle? We explored these questions in the current work in two ways. First, we asked whether reasoning about the successor function is possible only after CP acquisition, or whether children who have not yet learned the CP are able to implement the successor function in numbers for which they have acquired meanings. Second, we explored the possible mechanisms underlying the origins of the successor function, testing whether such knowledge relied on knowledge of the count list, or could be explained by a set-mapping mechanism. 
+
+In two Experiments, we found that subset knowers performed significantly better than chance on the Unit Task when tested on items which could fall within their known number range. Further, we found evidence that subset knowers’ performance on the Unit Task tracked with their number word knowledge. In Experiment 2, however, we found that subset knowers were not using the count list to succeed on the Unit Task; rather, it appears that these children relied on item-based mappings between known number words and set representations stored in working memory. On the basis of these results, it is likely that children’s item-based successor knowledge may arise quite early in numerical development, and may be initially independent from count list knowledge.
+
+Consistent with other work, however, we found that children’s successor knowledge increased after they acquired the CP, with CP-knowers out-performing subset knowers on the Unit Task in both Experiments. Further, CP-knowers’ Next Number performance was not significantly different than their Unit Task performance, suggesting that CP-knowers may already be starting to take advantage of their greater count list knowledge to reason about the successor function. Recent work has suggested that children eventually use the structure of the count list to make a full induction about the successor function (Chu et al., etc); our results indicate that even young CP-knowers may be starting to recognize the count list’s significance in solving these tasks. 
+
+This early-emerging item-based successor knowledge may play an important role in establishing a conceptual framework which children can then leverage to generalize the successor function to all possible numbers. Our results suggest that subset knowers initially store set representations (up to 3) in working memory, and are able to perform the necessary set operations to implement the successor function over these representations, provided that they have acquired the appropriate number word meanings. When children become CP-knowers, they seem to be able to draw upon the count list to expand this localized network, although it seems like this ability is fragile, given that their Unit Task performance was lower for items beyond working memory limits. 
+
+As children’s mastery of the count list continues to grow, the set of numbers for which they are able to reason about successor relations may increase, causing children to assert that it is possible to add +1 to some, but not all numbers. Finally, recognizing that number words are recursively generated — and that the item-based successor function that they apply to some numbers actually extends to all numbers — may support a full induction of the successor function, eventually enabling children to reason about the infinite nature of numbers [@cheung2017] (OTHER CITATIONS HERE). 
+
+(Other summary; other future directions)
+
+
 
 # References 
 
