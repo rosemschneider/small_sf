@@ -239,28 +239,25 @@ all.data.study2 %<>%
 ```
 
 # Introduction
-In the first few years of life, children accumulate knowledge of the components of symbolic number in isolation, gradually combining and integrating them to arrive at increasingly abstract numerical concepts. Throughout this process, however, their understanding of number is often strikingly limited, indicating fragile or absent mappings between components. A key example of this phenomenon is in children's protracted discovery that adding 1 to a set always denotes a number word 1 greater in the count list -- an understanding that reflects some implicit knowledge of the \emph{successor function}, a logical principle which states that the successor of any number \emph{n} is \emph{n}+1. For around 2 years after children have learned how to use the count routine to generate sets, they demonstrate piecemeal successor knowledge, and can implement it for only some numbers in their count list [@davidson2012; @cheung2017]. While there is growing evidence that children eventually generalize the successor function to \emph{all} numbers on the basis of their count list knowledge, there has been little work exploring their earlier item-based knowledge. Here, we investigate the origins of children's successor knowledge by exploring the mechanisms through which these localized mappings are acquired.
+In the first few years of life, children accumulate knowledge of the components of symbolic number in isolation, gradually combining and integrating them to arrive at increasingly abstract numerical concepts. Throughout this process, however, their understanding of number is often strikingly limited, indicating fragile or absent mappings between components. A key example of this phenomenon is in children's protracted discovery that adding 1 to a set always denotes a number word 1 greater in the count list -- an understanding that reflects some implicit knowledge of the \emph{successor function}, a logical principle which states that the successor of any number \emph{n} is \emph{n}+1. For around 2 years after children have learned how to use the count routine to generate sets, they demonstrate piecemeal successor knowledge, and can implement it for only some numbers in their count list [@davidson2012; @cheung2017]. While there is growing evidence that children eventually generalize the successor function to \emph{all} numbers on the basis of their count list knowledge, there has been little work exploring their earlier item-based knowledge. Here, we investigate the origins of successor knowledge by exploring the mechanisms through which children acquire these localized mappings.
 
-Children's generalization of the successor function comes several years after an extended process of acquiring the meanings of number words and the count routine. While most US children recite portions of the count list around 2 years of age [@fuson1988], it is not until around 2.5 years that they begin to understand the meanings of some number words [@wynn1990]. These "subset knowers" learn the first few number words sequentially and in isolation over ~18 months, but do not recognize the connection between the cardinalities represented by these number words and the count list. For example, a "two-knower" might be able to generate sets of \emph{one} and \emph{two}, while having no knowledge of \emph{three} [@wynn1990; @wynn1992]. Around 4 years of age, however, children eventually make this connection, and realize how the last word said while counting indicates the cardinality of a set (i.e. the Cardinal Principle, or CP).
+Children's generalization of the successor function comes several years after an extended process of acquiring the meanings of number words and the count routine. While most US children recite portions of the count list around 2 years of age [@fuson1988], it is not until around 2.5 years that they begin to understand the meanings of some number words [@wynn1990]. These "subset knowers" learn the first few number words sequentially and in isolation over ~18 months, but do not recognize the connection between the cardinalities represented by these number words and the count list. For example, a "two-knower" might be able to generate sets of \emph{one} and \emph{two}, while having no knowledge of \emph{three} [@wynn1992]. Around 4 years of age, however, children eventually make this connection, and realize how the last word said while counting indicates the cardinality of a set (i.e. the Cardinal Principle, or CP).
 
-On some accounts, children acquire the CP by noticing an ismorphism between the cardinalities of their known number words and the ordinal structure of the count list [@carey2004; @sarnecka2008]; that is, children discover that the +1 difference in these cardinalities is reflected by a +1 difference in the count list, an insight that is compatible with some implicit knowledge of the successor function. This hypothesis has typically been evaluated using a paradigm known as the "Unit Task" [@sarnecka2008], in which an experimenter labels a set ("Look! Here are 4 frogs!") and hides it behind an occluder. The experimenter then adds 1 item and asks, "Are there 5 or 6 frogs now?". To succeed, children must understand that the addition of 1 item to an established cardinality necessitates moving up exactly 1 number in the count list. Compatible with the hypothesis that acquiring the CP entails implicit knowledge of the successor function, @sarnecka2008 found that CP-knowers were significantly above chance on the Unit Task for sets of 4 and 5, while subset knowers performed at chance. 
+On some accounts, children acquire the CP by noticing an ismorphism between the cardinalities of their known number words and the ordinal structure of the count list [@carey2004; @sarnecka2008]; that is, children discover that the +1 difference in these cardinalities is reflected by a +1 difference in the count list, an insight that is compatible with some implicit knowledge of the successor function. This hypothesis has typically been evaluated using a paradigm known as the "Unit Task" [@sarnecka2008], in which an experimenter labels a set ("Look! Here are 4 frogs!") and hides it behind an occluder. The experimenter then adds 1 item and asks, "Are there 5 or 6 frogs now?". Compatible with the hypothesis that acquiring the CP entails implicit knowledge of the successor function, @sarnecka2008 found that CP-knowers were significantly above chance on this task for sets of 4 and 5, while subset knowers performed at chance. 
 
-While CP-knowers in Sarnecka and Carey (2008) outperformed subset knowers, there is strong evidence indicating that their Unit Task success did indicate generalized implicit successor knowledge, however, but instead reflected item-based knowledge of specific numbers; that is, many CP-knowers may only know that \emph{six} is 1 more than \emph{five}, rather than the more general principle that, for \emph{any} number, moving up in the count list corresponds to adding +1. First, while CP-knowers in Sarnecka and Carey (2008) performed above chance (50%), their average performance on even sets of 4 and 5 was far from ceiling (67%). Second, subsequent work has found that count list mastery is a stronger predictor of Unit Task performance than CP knowledge. For example, @davidson2012 found that CP-knowers who could count higher without error passed the Unit Task for more numbers in their count list, while less proficient counters were at chance for even well-known numbers. @cheung2017 subsequently replicated and extended this finding, showing that CP-knowers were not uniformly successful for larger numbers on the Unit Task until they could count quite high (>80) without error.  
+While CP-knowers in Sarnecka and Carey (2008) outperformed subset knowers, there is strong evidence that their Unit Task success did not indicate generalized successor knowledge, but instead reflected item-based knowledge of specific numbers; that is, many CP-knowers may only know that \emph{six} is 1 more than \emph{five}, rather than the more general principle that, for \emph{any} number, moving up in the count list corresponds to adding +1. First, while CP-knowers in Sarnecka and Carey (2008) performed above chance (50%), their average performance was far from ceiling (67%). Second, subsequent work has found that count list mastery is a stronger predictor of Unit Task performance than CP knowledge. For example, @davidson2012 found that CP-knowers who could count higher without error passed the Unit Task for more numbers in their count list, while less proficient counters were at chance for even well-known numbers. @cheung2017 subsequently replicated and extended this finding, showing that CP-knowers were not uniformly successful for larger numbers on the Unit Task until they could count quite high (>80) without error.  
 
-<!-- @davidson2012 proposed that this item-specific knowledge may lay the groundwork for a greater induction about the successor function; that is, learning that the result of adding 1 to a given \emph{N} should be labeled by the next number in the count list, \emph{N}+1 for some numbers may provide children with the beginnings of a generalized mechanism that they can later expand to include all numbers in the count list. Thus, while children's limited Unit Task success may not be evidence of implicit successor knowledge, it may reflect the origins of a localized network which eventually forms the basis of children's discovery that successive numbers in the count list all differ by a cardinality of exactly 1.  -->
+While multiple studies have explored children's acquisition of generalized successor knowledge, there is little work on how they establish these initial item-specific mappings. One possibility is that, similar to Carey's (2004) proposal, these mappings are supported by understanding how changes in cardinality are reflected in the count list; that is, by reasoning about set operations through knowledge of number word relations. This account predicts that only CP-knowers should succeed on the Unit Task, as subset knowers have not yet recognized the connection between the count list and cardinality. @spaepen2018 recently found evidence for this hypothesis, showing that CP-knowers trained on a portion of the count list containing \emph{five}, \emph{six}, and \emph{seven} had greater Unit Task performance for these numbers in comparison to untrained children. Notably, subset knowers did not improve with counting training. Thus, it is possible that while the CP is not sufficient to impart generalized successor knowledge, it may be necessary for acquiring item-based mappings.
 
-While multiple studies have explored how children acquire generalized successor knowledge, there is little work on how they establish these initial item-specific mappings. One possibility is that, similar to Carey's (2004) proposal, they are supported by understanding how changes in cardinality are reflected in relations between number words; that is, through reasoning about relations between words in the count list and the results of set operations in the Unit Task. Thus, this account predicts that only CP-knowers should succeed on the Unit Task, as subset knowers have not yet recognized the connection between the count list and cardinality. @spaepen2018 recently found evidence for this hypothesis, showing that CP-knowers trained on a portion of the count list containing \emph{five}, \emph{six}, and \emph{seven} had greater Unit Task performance for these numbers in comparison to untrained children. Notably, subset knowers did not improve with counting training. Thus, it is possible that while the CP is not sufficient to impart generalized successor knowledge, it may be necessary for acquiring item-based mappings.
+An alternative to this analogical mapping account, however, is that children may begin establishing item-based knowledge through mapping set operations directly to known number words, and without drawing upon any count list knowledge. For example, a child who knows that \emph{three} corresponds to a set of three items could pass the Unit Task through tracking the addition 1 to a set of 2, and then mapping the label \emph{three} directly to a nonsymbolic set representation. Critically, acquisition of the CP is not neccesary on this account, as children's item-based knowledge is drawn from mappings made directly from sets to known number words, rather than by reasoning about an isomorphism between the count list and cardinality. Thus, this account would predict that even subset knowers should have able to succeed on the Unit Task for known number words. 
 
-An alternative to this analogical mapping account, however, is that children may begin establishing item-based knowledge through mapping the results of set operations directly to known number words. For example, a child who knows that \emph{three} corresponds to a set of three items could pass the Unit Task through tracking the addition 1 to a set of 2, and then mapping the label \emph{three} directly to a nonsymbolic representation of the final set. Critically, acquisition of the CP is not neccesary on this account, as children's item-based knowledge is drawn from mappings made directly from sets to known number words, rather than by reasoning about an isomorphism between the count list and cardinality. Thus, this account would predict that even subset knowers should have able to succeed on the Unit Task for known number words.
+One possible reason previous work concluded that Unit Task success was dependent on CP acquisition is that it tested numbers well outside subset knowers' known number range (e.g., 4, 5, and 6). Despite lower performance in comparison to CP-knowers on such "large" numbers, many subset knowers demonstrate above-chance Unit Task performance for sets of 1 and 2, numbers well within their known range [@sarnecka2008]. Additionally, there is some evidence that subset knowers can perform the basic set operations required to succeed on the Unit Task, even without having access to the count list's ordinal structure. @huttenlocher1994 found that children between 2.5 and 4 years were able to track the addition of 1 to sets of 1, 2, and 3, while @hughes1981 found that children as young as 3 years succeeded on a paradigm similar to the Unit Task for similarly small numbers. Together, these findings raise the possibility that children may begin learning these item-based mappings prior to acquiring the CP, and also that such mappings might initially rely on mappings made directly from sets to words. However, the majority of previous work using the Unit Task has not been able to test for this possibility because it has focused on numbers which are unknown to subset knowers. Further, much of this previous work did not explicitly test whether count list knowledge mediated item-based Unit Task performance. 
 
-One possible reason that previous work has concluded that Unit Task success was dependent on CP acquisition is that children are typically tested on numbers well outside subset knowers' known number range, such as 4, 5, and 6. Despite lower performance in comparison to CP-knowers on such "large" numbers, many subset knowers demonstrate above-chance Unit Task performance for sets of 1 and 2, numbers well within their known number range [@sarnecka2008]. Additionally, there is some evidence that subset knowers are able to perform the basic set operations in working memory required to succeed on the Unit Task, even without having access to the count list's ordinal structure. @huttenlocher1994 found that children between 2.5 and 4 years were able to track additions of 1 to sets of 1, 2, and 3, while @hughes1981 found that children as young as 3 years were able to succeed on a paradigm similar to the Unit Task for small numbers (1, 2, and 3).
+Here, we explore these two possible mechanisms of item-specific Unit Task performance through examining subset and CP-knowers' Unit Task performance for very small sets (1 - 5). In Experiment 1, we find that Unit Task success is not dependent on the CP, but rather familiarity with specific numbers, and also that it is unrelated to general count list knowledge. In Experiment 2 we further explored the role of count list knowledge by comparing children's performance on the Unit Task to the Next Number task, a stronger measure of count list knowledge, and again find no evidence that subset knowers are drawing upon the count list to form these item-based mappings. 
 
-Together, these findings raise the possibility that children may begin learning these item-based mappings prior to acquiring the CP, and also that such mappings might initially rely on reasoning about relations between sets and words, rather than between words and words. However, the majority of previous work using the Unit Task has not been able to test for this possibility because it has focused on numbers which are unknown to subset knowers, and also did not explicitly test whether count list knowledge mediated item-based Unit Task performance. In the current work, we explore these two possible mechanisms underlying children's early item-specific Unit Task performance through examining subset and CP-knowers' Unit Task performance for very small sets (1 - 5). In Experiment 1, we find that Unit Task success is not dependent on the CP, but rather familiarity with specific numbers, and also that it is unrelated to general count list knowledge. In Experiment 2 we further explored the role of count list knowledge by comparing children's comparing children's performance on the Unit Task to the Next Number task, which provides a stronger test of count list knowledge, and find no evidence that subset knowers are drawing upon the count list to form these item-based mappings. 
-
-<!-- many CP-knowers still do not understand how its ordinal structure captures the successor function. For example, in a paradigm frequently used to assess successor function knowledge known as the "Unit Task," many young CP-knowers are unable to determine whether adding +1 to sets of 4, 5, or 6 (numbers well within their count range) results in a set which should be labeled by \emph{n}+1 or \emph{n}+2 [@sarnecka2008;@spaepen2018]. This limited knowledge extends for at least one to two years after learning the CP, suggesting that children's earliest successor mappings may be drawn from their familiarity with specific numbers, as opposed to a generalized principle. There is growing evidence, however, that children may eventually learn how the successor function can be implemented for all numbers through their mastery of the count list.  counting proficiency and Unit Task performance were significantly correlated with their understanding of numerical infinity.  -->
 # Experiment 1
 ## Method
-The methods and analyses for both Experiments 1 and 2 were pre-registered (https://osf.io/deqzk/?view_only=e49622708a214438bb095f18bdaa8224). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
+The methods and analyses were pre-registered (https://tinyurl.com/tabob4l). All methodological and analytical choices were as pre-registered, unless stated otherwise in-text.
 
 ### Participants
 ```{r exp1.demos}
@@ -326,19 +323,15 @@ $SD_{age}$ & `r n.levels.exp1$sd_age[1]` &  `r n.levels.exp1$sd_age[2]` & `r n.l
 Children were tested individually in a quiet spot within the classroom or museum or in a room set apart from the classroom. Participants received the tasks in a fixed order (Unit Task, Give-N, and Highest Count).
 
 #### Unit Task 
-We assessed children’s successor function knowledge with a modified version of the Unit Task [@sarnecka2008]. The experimenter presented children with an opaque container and some small fish, saying, "This is my fish bowl and these are my fish!" The experimenter then placed between 1 and 5 fish in the bowl, briefly showed them to the child, and said, "Look, I have \emph{N} fish here. \emph{N} fish are swimming in the fish bowl." Children were prevented from counting during this presentation by the experimenter. The experimenter then placed an opaque lid over the container and asked, "How many fish are in the fish bowl?" Children were given two opportunities to pass this memory check; if they failed both, the experimenter told them how many fish there were, and proceeded with the remainder of the trial.
+We assessed item-based successor knowledge with the Unit Task [@sarnecka2008]. The experimenter presented children with an opaque container and some small fish, saying, "This is my fish bowl and these are my fish!" The experimenter then placed between 1 and 5 fish in the bowl, briefly showed them to the child, and said, "Look, \emph{N} fish are swimming in the fish bowl." The experimenter then placed a lid over the container and asked, "How many fish are in the fish bowl?" Children were given two opportunities to pass this memory check; if they failed both, the experimenter told them how many fish there were, and proceeded with the remainder of the trial. After the memory check, the experimenter added 1 fish to the container before asking, “Are there \emph{N}+1 or \emph{N}+2 fish now?”. Order of alternatives was counterbalanced across trials.
 
-After the memory check, the experimenter said, “Now watch!”, and added one fish to the container before asking, “Are there \emph{N}+1 or \emph{N}+2 fish now?”. Order of the presented alternatives was counterbalanced across trials. If children failed to pick one of the presented alternatives, the experimenter provided the alternatives again verbally and encouraged the child to select one. 
-
-Participants completed a training trial with feedback in which only 1 fish was added to an empty bowl. Once children passed this training trial, they received 10 test trials with neutral feedback. A correct response for a given \emph{N} was \emph{N}+1. “I don’t know” responses were coded as incorrect. Only numeric responses were included in analyses; non-numeric answers were excluded. Trials were classified as either within or outside of a child’s \emph{N}-knower level (e.g., trials with 1 and 2 items were classified as “within” a 2-knower’s range). 
+Participants completed a training trial with feedback in which only 1 fish was added to an empty bowl. Once children passed this training trial, they received 10 test trials with neutral feedback. A correct response for a given \emph{N} was \emph{N}+1. “I don’t know” responses were coded as incorrect. Only numeric responses were included in analyses; non-numeric answers were excluded. Trials were classified as either within or outside of a child’s \emph{N}-knower level.
 
 #### Give-N
-We used a titrated version of Give-N to assess children's knower level. The experimenter provided children with 10 identical plastic objects (e.g., strawberries, bananas) and a small plastic plate. After familiarizing the child with the game, the experimenter asked them to put \emph{N} items on the plate After the child finished placing a set on the plate, the experimenter asked “Is that \emph{N}? Can you count to make sure?” If the child recognized an error, they were permitted to fix the set. 
-
-If the child succeeded on a requested \emph{N}, the experimenter requested \emph{N}+1 on the next trial, up to six items. If the child failed on a given \emph{N}, the experimenter requested \emph{N}-1 on the next trial. This pattern of titration continued until the child’s knower level could be confidently identified. Children were defined as \emph{N}-knowers if they correctly provided \emph{N} on at least two out of the three trials that \emph{N} was requested, and did not give that \emph{N} more than once when asked for another number. Children who correctly generated sets of 6 at least 2 out of 3 times when requested were classified as CP-knowers. 
+We used a titrated version of Give-N to assess children's knower level. The experimenter provided children with 10 plastic objects (e.g., bananas) and a small plate. After familiarizing the child with the game, the experimenter asked them to put \emph{N} items on the plate After the child finished, the experimenter asked “Is that \emph{N}? Can you count to make sure?” If the child recognized an error, they were permitted to fix the set. If the child succeeded on a requested \emph{N}, the experimenter requested \emph{N}+1 on the next trial, up to 6 items. If the child failed on a given \emph{N}, the experimenter requested \emph{N}-1 on the next trial. This pattern continued until the child’s knower level could be identified. Children were defined as \emph{N}-knowers if they correctly provided \emph{N} on at least two out of the three trials where \emph{N} was requested, and did not give that \emph{N} more than once for another number. Children who correctly generated sets of 6 at least 2 out of 3 times when requested were classified as CP-knowers. 
 
 #### Highest Count. 
-We used the Highest Count task as a measure of counting experience beyond the CP stage, as well as to test whether, even in the subset stages, knowledge of counting procedures might enhance knowledge of relations between words. An experimenter introduced the task to the child by saying, “In this game, I want you to count as high as you can! Can you start counting for me with \emph{one}?" A child’s Highest Count was the largest number counted to before making an error, or the point at which the child did not know how to continue.
+We used the Highest Count task as a measure of counting experience beyond the CP stage, as well as to test whether, even in the subset stages, knowledge of counting procedures might enhance knowledge of relations between number words. An experimenter introduced the task to the child by saying, “In this game, I want you to count as high as you can! Can you start counting for me with \emph{one}?" A child’s Highest Count was the largest number counted to before making an error, or the point at which the child did not know how to continue.
 
 ```{r model_setup_exp1, include = FALSE}
 model.df.study1 <- all.data.study1 %>%
@@ -392,40 +385,7 @@ anova(subset.chance.within.kl, subset.hc.within, test = 'LRT')
 ```
 
 ## Results and Discussion
-```{r exp_1_unit, fig.pos = "tb", fig.width=3.5, fig.height=1.5, fig.align = "center", fig.cap = "Mean Unit Task performance for subset knowers in Exp. 1, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three- and 4-knowers are collapsed together due to small ns."}
-#visualization 
-all.data.study1 %>%
-  filter(Knower_level == "1" | 
-           Knower_level == "2" | 
-           Knower_level == "3" | 
-           Knower_level == "4" )%>%
-  mutate(Task_item = factor(Task_item), 
-         Correct = as.numeric(as.character(Correct)), 
-         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3"), "3- & 4-knowers", as.character(Knower_level)),
-         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3- & 4-knowers", "CP"), 
-                               labels = c("1-knowers", "2-knowers", "3- & 4-knowers", "CP-knowers")))%>%
-  filter(Task == "SF")%>%
-  group_by(Task_item, Knower_level.combined)%>%
-  # summarise(mean = mean(Correct, na.rm = TRUE),
-  #           n = n(), 
-  #           sd = sd(Correct, na.rm = TRUE), 
-  #           se = sd/sqrt(n)) %>%
-  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
-  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
-  geom_point(size = 1, 
-             show.legend = FALSE) + 
-  geom_line(size = .5, 
-            show.legend = FALSE) +
-  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
-                width = 0, size = .5, 
-                show.legend = FALSE) +
-  theme_bw(base_size = 7.5) + 
-  theme(legend.position = "top", 
-        panel.grid = element_blank()) + 
-  facet_wrap(~Knower_level.combined, ncol = 3) +
-  langcog::scale_color_solarized("Knower level") +
-  labs(x = "Starting set size", y = "Mean Unit Task performance")
+```{r means_1, include=FALSE}
 
 means_within <- model.df.study1.within %>%
   filter(Task == "SF")%>%
@@ -438,6 +398,39 @@ means_overall <- all.data.study1 %>%
   group_by(CP_subset)%>%
   summarise(mean_correct = mean(Correct, na.rm = TRUE), 
             sd_correct = sd(Correct, na.rm = TRUE))
+```
+
+```{r exp_1_cp_subset, fig.pos = "tb", fig.width= 2.4, fig.height=1.8, fig.align = "center", fig.cap = "Mean Unit Task performance for CP- and subset knowers in Exp. 1. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
+
+cp.subset.pal <- c("#CAB2D6", "#6A3D9A" )
+all.data.study1 %>%
+    filter(Task == "SF")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knower", "CP-knower")))%>%
+  group_by(Task_item, CP_subset)%>%
+   # summarise(mean = mean(Correct, na.rm = TRUE), 
+   #          n = n(), 
+   #          sd = sd(Correct, na.rm = TRUE), 
+   #          se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
+  geom_point(size = 1) + 
+  geom_line(size = .5) +
+  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 9) + 
+  theme(panel.grid = element_blank(), 
+        legend.position = "top", 
+        legend.title = element_blank(), 
+        legend.margin=margin(1,1,1,1),
+        legend.box.margin=margin(-7,-7,-7,-7)) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(.25, 1)) + 
+  scale_color_manual(values = cp.subset.pal) +
+  labs(x = "Starting set size", y = "Mean Unit performance", 
+       color = "Knower level")
 ```
 
 ```{r exp_1_t_tests, include = FALSE}
@@ -520,39 +513,6 @@ cp.hc.anova <- anova(cp.hc.base, cp.hc, test ='LRT')
 cp.hc.summary <- summary(cp.hc)
 ```
 
-```{r exp_1_cp_subset, fig.width= 2.7, fig.height=1.8, fig.align = "center", fig.cap = "Mean Unit Task performance for CP- and subset knowers in Exp. 1. Error bars represent 95\\% CIs computed by nonparametric bootstrap."}
-
-cp.subset.pal <- c("#CAB2D6", "#6A3D9A" )
-all.data.study1 %>%
-    filter(Task == "SF")%>%
-  mutate(Task_item = factor(Task_item), 
-         Correct = as.numeric(as.character(Correct)), 
-         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
-                            labels = c("Subset-knower", "CP-knower")))%>%
-  group_by(Task_item, CP_subset)%>%
-   # summarise(mean = mean(Correct, na.rm = TRUE), 
-   #          n = n(), 
-   #          sd = sd(Correct, na.rm = TRUE), 
-   #          se = sd/sqrt(n)) %>%
-  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
-  ggplot(aes(x = factor(Task_item), y = mean, colour = CP_subset, group= CP_subset)) +
-  geom_point(size = 1) + 
-  geom_line(size = .5) +
-  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
-                width = 0, size = .5) +
-  theme_bw(base_size = 7.5) + 
-  theme(panel.grid = element_blank(), 
-        legend.position = "top", 
-        legend.title = element_blank(), 
-        legend.margin=margin(1,1,1,1),
-        legend.box.margin=margin(-7,-7,-7,-7)) + 
-  scale_y_continuous(breaks = seq(0,1,.25), limits = c(.25, 1)) + 
-  scale_color_manual(values = cp.subset.pal) +
-  labs(x = "Starting set size", y = "Mean Unit Task performance", 
-       color = "Knower level")
-```
-
 In our first analysis we tested whether, consistent with previous work [@sarnecka2008; @spaepen2018], CP-knowers were more accurate than subset knowers on the Unit Task. To test this, we built a generalized linear mixed effects model (GLMEM)\footnote{All mixed models were fit in \texttt{R} using the \texttt{lme4} package.} predicting Unit Task performance from CP-knower status and age with a random effect of participant. Compatible with prior work, this model indicated that subset knowers had significantly less accurate Unit Task performance in comparison to CP-knowers (`r round(cp.subset.kl.sum$coefficients[2], 2)`, $p =$ .02;  Figure \ref{fig:exp_1_cp_subset}). Despite this greater overall accuracy, we also found evidence of item-based success in this group, and that acquiring the CP does not guarantee implicit successor knowledge [@davidson2012; @cheung2017; @spaepen2018], with CP-knowers performing at chance for sets of 4 (`r round(cp.unit.t.test.4$statistic, 2)`, $p =$  `r round(cp.unit.t.test.4$p.value, 2)`) and 5 (`r round(cp.unit.t.test.5$statistic, 2)`, $p =$  `r round(cp.unit.t.test.5$p.value, 2)`).
 
 While subset knowers had significantly lower mean Unit Task accuracy (\emph{M} = `r round(means_overall$mean_correct[2], 2)`) in comparison to CP-knowers (\emph{M} = `r round(means_overall$mean_correct[1], 2)`), a null GLMEM predicting Unit Task performance with a random effect of subject indicated that their overall performance was significantly different from chance (Wald \emph{Z} $=$ `r round(subset.chance.overall$coefficients[3], 2)`, $p =$ .0007), as shown in Figure \ref{fig:exp_1_cp_subset}. Looking specifically at numbers within their known range, we again found that subset knowers performed significantly better than chance (Wald \emph{Z} $=$ `r round(subset.chance.within.kl.sum$coefficients[3], 2)`, $p$ < .0001), with higher accuracy for items which were within their known range (\emph{M} = `r round(means_within$mean_correct[2], 2)`) as opposed to unknown numbers (\emph{M} = `r round(means_within$mean_correct[1], 2)`). Thus, although subset knowers were less accurate than CP-knowers on this task, their performance was above chance overall. Additionally, we find evidence that this effect is driven by their knowledge of known number words.
@@ -563,12 +523,50 @@ Finally, we tested whether children's Unit Task performance was related to their
 
 Together, these results indicate that, despite demonstrating lower accuracy in comparison to CP-knowers on the Unit Task, subset knowers can map the results of the set operations in this task to a range of small number words (1-5) at above-chance levels, and that this success is driven by items within their Knower level. Critically, however, we found that performance was not related to counting proficiency for either subset knowers or, surprisingly, CP knowers, suggesting that some children may not succeed in this task through reasoning about relations between number words. This result is compatible with the hypothesis that the origins of children's implicit successor knowledge may not lie in understanding the structure of the count list, but potentially through mapping the results of set operations directly to known number words. 
 
+```{r exp_1_unit, fig.pos = "tb", fig.width=3.5, fig.height=1.6, fig.align = "center", fig.cap = "Mean Unit Task performance for subset knowers in Exp. 1, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three- and 4-knowers shown together."}
+#visualization 
+all.data.study1 %>%
+  filter(Knower_level == "1" | 
+           Knower_level == "2" | 
+           Knower_level == "3" | 
+           Knower_level == "4" )%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3"), "3- & 4-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3- & 4-knowers", "CP"), 
+                               labels = c("1-knowers", "2-knowers", "3- & 4-knowers", "CP-knowers")))%>%
+  filter(Task == "SF")%>%
+  group_by(Task_item, Knower_level.combined)%>%
+  # summarise(mean = mean(Correct, na.rm = TRUE),
+  #           n = n(), 
+  #           sd = sd(Correct, na.rm = TRUE), 
+  #           se = sd/sqrt(n)) %>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = factor(Task_item), y = mean, colour = Knower_level.combined, group= Knower_level.combined)) +
+  geom_point(size = 1, 
+             show.legend = FALSE) + 
+  geom_line(size = .5, 
+            show.legend = FALSE) +
+  geom_hline(yintercept = .5, linetype = "dashed", color = "grey", size = .5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5, 
+                show.legend = FALSE) +
+  theme_bw(base_size = 9) + 
+  theme(legend.position = "top", 
+        panel.grid = element_blank()) + 
+  facet_wrap(~Knower_level.combined, ncol = 3) +
+  langcog::scale_color_solarized("Knower level") +
+  labs(x = "Starting set size", y = "Mean Unit performance")
+```
+
 One limitation in Experiment 1, however, was that our measure of count list knowledge (Highest Count) varies substantially across children, and does not systematically test children's knowledge of relations between number words, but may reflect a rote-memorized list. Thus, in Experiment 2, we included the Next Number task to assess their knowledge of these number word relations.
 
 # Experiment 2
 To test whether children in Experiment 1 were succeeding through deploying item-based mappings between known number words and sets stored in working memory, or through an analogical mapping based on a portion of the count list containing these known numbers, we compared subset and CP-knowers' Unit Task performance with their Next Number performance. This task requires children to count up from an arbitrary point in the count list in response to a prompt (e.g., "\emph{N}, what comes next?"). The logic of adding this task was that, if children are using knowledge of relations between number words to succeed on the Next Number task, then we should find that children who are able to pass the Unit Task for a given \emph{N} should also be able to name the number after \emph{N}. If, however, children are solving the Unit Task by mapping directly from representations of sets to known number words, then we should find no relationship between these two tasks. 
 
 ## Method
+The methods and analyses were pre-registered (https://tinyurl.com/uh5wyfa).
+
 ### Participants
 ```{r exp2.demos}
 exp.2.demos.age <- all.data.study2 %>%
@@ -596,7 +594,7 @@ n.levels.exp2 <- all.data.study2 %>%
 
 ```
 
-We recruited `r exp.2.demos.age$total.n[1]` participants between the ages of 2 and 4 years (`r subset(exp2.demos.sex, Sex == "F")$n[1]` female, $M_{age} =$ `r round(mean(all.data.study2$Age, na.rm = TRUE), 2)`, $SD_{age} =$ `r round(sd(all.data.study2$Age, na.rm = TRUE),2)`, range $=$ `r round(min(all.data.study2$Age),2)`-`r round(max(all.data.study2$Age),2)` years) from local preschools and the surrounding community in San Diego, US. Forty-five of these children were classified as subset knowers and `r subset(exp.2.demos.age, CP_subset == "CP")$n` were classified as CP-knowers using the Give-N task. The breakdown of \emph{N}-knower level classifications is shown in Table \ref{tab:demos2}.
+We recruited `r exp.2.demos.age$total.n[1]` participants between 2 and 4 years of age (`r subset(exp2.demos.sex, Sex == "F")$n[1]` female, $M_{age} =$ `r round(mean(all.data.study2$Age, na.rm = TRUE), 2)`, $SD_{age} =$ `r round(sd(all.data.study2$Age, na.rm = TRUE),2)`, range $=$ `r round(min(all.data.study2$Age),2)`-`r round(max(all.data.study2$Age),2)` years) from local preschools and the surrounding community in San Diego, US. Forty-five of these children were classified as subset knowers and `r subset(exp.2.demos.age, CP_subset == "CP")$n` were classified as CP-knowers. The breakdown of \emph{N}-knower level classifications is shown in Table \ref{tab:demos2}.
 
 \begin{table}[h]
 \centering
@@ -612,24 +610,6 @@ $SD_{age}$ & `r n.levels.exp2$sd_age[1]` &  `r n.levels.exp2$sd_age[2]` & `r n.l
 \caption{Demographics for all participants by knower level classification.}
 \label{tab:demos2}
 \end{table}
-
-<!-- \begin{table}[h] -->
-<!-- \centering -->
-<!-- \begin{tabular}{c c c }  -->
-<!--  \hline -->
-<!--  \emph{N}-knower level & \emph{n} & $M_{age}$ (SD) \\ -->
-<!--  \hline -->
-<!--  1-knower & `r n.levels.exp2$n[1]` & `r n.levels.exp2$mean_age[1]` (`r n.levels.exp2$sd_age[1]`)\\ -->
-<!--  2-knower & `r n.levels.exp2$n[2]` & `r n.levels.exp2$mean_age[2]` (`r n.levels.exp2$sd_age[2]`)\\  -->
-<!--  3-knower & `r n.levels.exp2$n[3]` & `r n.levels.exp2$mean_age[3]` (`r n.levels.exp2$sd_age[3]`)\\ -->
-<!--  4-knower & `r n.levels.exp2$n[4]` & `r n.levels.exp2$mean_age[4]` (`r n.levels.exp2$sd_age[4]`)\\ -->
-<!--  5-knower & `r n.levels.exp2$n[5]` & `r n.levels.exp2$mean_age[5]`\\ -->
-<!--  CP-knower & `r n.levels.exp2$n[6]` & `r n.levels.exp2$mean_age[6]` (`r n.levels.exp2$sd_age[6]`)\\ -->
-<!--  \hline -->
-<!-- \end{tabular} -->
-<!-- \caption{Demographics for all participants by knower level classification.} -->
-<!-- \label{tab:demos2} -->
-<!-- \end{table}  -->
 
 ### Procedure
 Stimuli and methods were identical to Experiment 1 with two exceptions. First, we added the Next Number task to test children's knowledge of relations between the number words queried in the Unit Task (1-5). Children were given a prompt, and then asked what number came next. Children received a training trial with 'one', during which they received feedback, and then received 10 additional trials. Items were present in a pseudo-randomized order, and each number was queried twice. As in Experiment 1, participants received the tasks in a fixed order (Unit Task, Next Number, Give-N, and Highest Count). 
@@ -818,7 +798,7 @@ While we did not find a relationship between children's Highest Count and their 
 
 In contrast, we found that CP-knowers significantly outperformed subset knowers on the Next Number Task ($\beta =$ `r round(cp.nn.2$coefficients[2,1], 2)`, $p <$ .0001; \emph{M} = `r round(means_overall_2.nn$mean_correct[1],2)`), and critically, that there was no difference in CP-knowers' Unit Task and Next Number performance ($\beta =$ `r round(cp.nn.sum$coefficients[2,1], 2)`, $p =$ .21), as shown in Figure \ref{fig:exp_2_cp_sub}. Thus, we did find some evidence that CP-knowers who have access to the ordinal structure of the count list may be able to recruit this knowledge when reasoning about successor relations for these small numbers. However, the fact that CP-knowers were nevertheless at chance for sets of 4 and 5 in the Unit Task suggests that not all children were capable of making the analogical mapping required in this task.
 
-```{r exp_2_unit_nn, fig.pos = "tb", fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for subset knowers in Exp. 2, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three-, 4-, and 5- knowers are collapsed together due to small ns."}
+```{r exp_2_unit_nn, fig.pos = "tb", fig.width=3.5, fig.height=1.9, fig.align = "center", fig.cap = "Mean Unit Task and Next Number performance for subset knowers in Exp. 2, grouped by knower level. Error bars represent 95\\% CIs computed by nonparametric bootstrap. Three-, 4-, and 5- knowers shown together."}
 task.pal <- c("#cb4b16", "#2aa198")
 
 all.data.study2 %>%
