@@ -36,6 +36,9 @@ theme_set(theme_bw() + theme(text = element_text(size=9),
                              strip.text = element_text(margin=margin(2,0,2,0)), 
                              panel.grid = element_blank()))
 
+#custom palettes
+task.pal <- c("#cb4b16", "#2aa198")
+
 
 # Study 1 ----
 
@@ -88,6 +91,18 @@ all.data.study1 %>%
   dplyr::select(Knower_level, n, mean, sd, median, min, max)
 
 # ...analysis: Do subset-knowers do better on this task than chance (glmers)? ----
+##Descriptives of mean performance
+#overall
+all.data.study1 %>%
+  group_by(CP_subset)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#count_range
+all.data.study1 %>%
+  group_by(CP_subset, count_range)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#create a dataframe for highest count analyses
 hc.only.df <- all.data.study1 %>%
   filter(!is.na(highest_count))
 ##Test 1: Subset-knowers, all trials
@@ -210,7 +225,7 @@ all.data.study1 %>%
   mutate(Task_item = factor(Task_item), 
          Correct = as.numeric(as.character(Correct)), 
          CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
-                            labels = c("Subset-knower", "CP-knower")))%>%
+                            labels = c("Subset-knowers", "CP-knowers")))%>%
   group_by(Task_item, CP_subset)%>%
   langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
   ggplot(aes(x = Task_item, y = mean, colour = CP_subset, group= CP_subset)) +
@@ -279,4 +294,185 @@ all.data.study2 %>%
                     ~sum(!is.na(.))))%>%
   dplyr::rename("n" = "sum")%>%
   dplyr::select(Knower_level, n, mean, sd, median, min, max)
+
+# ...analysis: SF and NN comparison
+##Descriptives of mean performance
+#overall
+all.data.study2 %>%
+  group_by(CP_subset, Task)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#count range
+all.data.study2 %>%
+  group_by(CP_subset, Task, count_range)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+##Test 1: Do subset-knowers perform better on NN in comparison to SF overall?
+#remove NA highest count so we can do comparisons
+model.df.2 <- all.data.study2 %>%
+  filter(!is.na(highest_count))
+#make base
+nn.v.sf.base <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "Subset"))
+#add task
+nn.v.sf.task <- glmer(Correct ~ Task + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "Subset"))
+#compare
+anova(nn.v.sf.base, nn.v.sf.task, test= 'LRT')# Chisq = 66.55, p < .0001
+summary(nn.v.sf.task)
+
+##Test 2: Do subset-knowers perform better on NN in comparison to SF for numbers within knower level?
+#make base
+nn.v.sf.base.within <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "Subset" & count_range == "Within"))
+#add task
+nn.v.sf.task.within <- glmer(Correct ~ Task + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "Subset" & count_range == "Within"))
+#compare
+anova(nn.v.sf.base.within, nn.v.sf.task.within, test= 'LRT')# Chisq = 36.45, p < .0001
+summary(nn.v.sf.task.within)
+
+##Test 3: Do CP-knowers perform better on NN in comparison to SF overall?
+#make base
+nn.v.sf.base.cp <- glmer(Correct ~ 1 + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "CP"))
+#add task
+nn.v.sf.task.cp <- glmer(Correct ~ Task + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, CP_subset == "CP"))
+#compare
+anova(nn.v.sf.base.cp, nn.v.sf.task.cp, test= 'LRT')# Chisq = 1.55, p = 0.21
+summary(nn.v.sf.task.cp)
+
+##Test 4: Do CP-knowers outperform subset knowers on NN? 
+nn.cp.v.subset.base <- glmer(Correct ~ age.c + (1|SID), 
+                             family = binomial, data = subset(model.df.2, Task == "Next_number"))
+nn.cp.v.subset.kl <- glmer(Correct ~ CP_subset + age.c + (1|SID), 
+                             family = binomial, data = subset(model.df.2, Task == "Next_number"))
+anova(nn.cp.v.subset.base, nn.cp.v.subset.kl, test = 'lrt')
+summary(nn.cp.v.subset.kl)
+
+# ...analysis: SF performance
+##Test 1: Do subset-knowers perform above chance on SF overall?
+subset.sf.chance <- glmer(Correct ~ 1 + (1|SID), 
+                          family = 'binomial', data = subset(model.df.2, CP_subset == "Subset" & Task == "SF"))
+
+summary(subset.sf.chance) #Z 2.50, p = .01
+
+##Test 2: Do subset-knowers perform above chance on SF within range?
+subset.sf.within <- glmer(Correct ~ 1 + (1|SID), 
+                          family = 'binomial', data = subset(model.df.2, CP_subset == "Subset" & Task == "SF" & count_range == "Within"))
+
+summary(subset.sf.within) #Z 3.76, p = .0002
+
+##Test 3: Do CP-knowers perform better than subset knowers overall?
+cp.subset.sf.overall.base <- glmer(Correct ~ age.c + (1|SID), 
+                          family = 'binomial', data = subset(model.df.2, Task == "SF"))
+cp.subset.sf.overall.kl <- glmer(Correct ~ CP_subset + age.c + (1|SID), 
+                                   family = 'binomial', data = subset(model.df.2, Task == "SF"))
+anova(cp.subset.sf.overall.base, cp.subset.sf.overall.kl, test = 'lrt') #Chisq = 4.22, p = .04
+summary(cp.subset.sf.overall.kl)#beta = 0.48, p = .04
+
+
+##Test 4a: Does highest count predict performance for subset knowers? 
+subset.sf.hc.base <- glmer(Correct ~ 1 + (1|SID), 
+                                   family = 'binomial', data = subset(model.df.2, Task == "SF" & CP_subset == "Subset"))
+subset.sf.hc <- glmer(Correct ~ highest_count.c + (1|SID), 
+                                 family = 'binomial', data = subset(model.df.2, Task == "SF" & CP_subset == "Subset"))
+anova(subset.sf.hc.base, subset.sf.hc, test = 'lrt') #Chisq = 0.56, p = 0.45
+
+##Test 4b: Does highest count predict performance for CP knowers? 
+cp.sf.hc.base <- glmer(Correct ~ 1 + (1|SID), 
+                           family = 'binomial', data = subset(model.df.2, Task == "SF" & CP_subset == "CP"))
+cp.sf.hc <- glmer(Correct ~ highest_count.c + (1|SID), 
+                      family = 'binomial', data = subset(model.df.2, Task == "SF" & CP_subset == "CP"))
+anova(cp.sf.hc.base, cp.sf.hc, test = 'lrt') #Chisq = 1.31, p = 0.27
+
+# ...Exploratory: t-tests against chance for item by knower level ----
+study2.ms <- all.data.study2 %>%
+  filter(Task == "SF")%>%
+  group_by(SID, Knower_level, Task_item)%>%
+  summarise(mean = mean(Correct, na.rm = TRUE))
+
+#1-knowers
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #ns; t(13) = -0.69, p = 0.5
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns; t(13) = 1.15, p = 0.27
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns; t(13) = 0.56, p = 0.58
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns; t(13) = 0, p = 1
+t.test(subset(study2.ms, Knower_level == "1" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns t(13) = 0.56, p = 0.58
+
+
+#2-knowers
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #sig, t(17) = 3.34, p = .004
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns; t(17) = -0.32, p = 0.75
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns; t(17) = -0.32, P = 0.75
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns; t(17) = 0.37, p = 0.72
+t.test(subset(study2.ms, Knower_level == "2" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns; t(16) = 0.37, p = 0.72
+
+#3-knowers
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #sig, t(7) = 2.65, p = .03
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #ns; t(7) = 1.87, p= .10
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #ns; t(7) = 1, p= 0.35
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns; t(7) = 0.55, p = 0.60
+t.test(subset(study2.ms, Knower_level == "3" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns; t(7) = -1.43, p = 0.20
+
+#CP-knowers
+t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "1")$mean, mu = .5, var.equal = TRUE) #sig, t(27) = 11.15, p <.0001
+t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "2")$mean, mu = .5, var.equal = TRUE) #sig; t(27) = 8.22, p= < .0001
+t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "3")$mean, mu = .5, var.equal = TRUE) #sig; t(27) = 3.86, p= 0.0006
+t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns; t(27) = 0.72, p = 0.48
+t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns; t(27) = 1.22, p = 0.23
+
+# ...visualizations ----
+##Subset-knowers; SF vs. NN
+all.data.study2 %>%
+  filter(Knower_level != "CP")%>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Knower_level.combined = ifelse((Knower_level == "4" | Knower_level == "3" | Knower_level == "5"), "3-, 4-, & 5-knowers", as.character(Knower_level)),
+         Knower_level.combined = factor(Knower_level.combined, levels= c("1", "2", "3-, 4-, & 5-knowers"), 
+                                        labels = c("1-knowers", "2-knowers", "3-, 4-, & 5-knowers")), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                       labels = c("Next Number", "Unit Task")))%>%
+  group_by(Knower_level.combined, Task, Task_item)%>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = Task_item, y = mean, colour = Task, group= Task)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 10) + 
+  theme(legend.position = "right", 
+        panel.grid = element_blank(), 
+        legend.title = element_blank()) + 
+  facet_wrap(~Knower_level.combined) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_manual(values = task.pal)+ 
+  labs(x = "Number queried", y = "Mean task performance")
+ggsave("Figures/study2_nKL_NNandUnit.png", width = 7.5, height = 3)
+
+##SF and NN by CP/Subset
+all.data.study2 %>%
+  mutate(Task_item = factor(Task_item), 
+         Correct = as.numeric(as.character(Correct)), 
+         Task = factor(Task, levels = c("Next_number", "SF"), 
+                       labels = c("Next Number", "Unit Task")), 
+         CP_subset = factor(CP_subset, levels = c("Subset", "CP"), 
+                            labels = c("Subset-knowers", "CP-knowers")))%>%
+  group_by(CP_subset, Task, Task_item)%>%
+  langcog::multi_boot_standard("Correct", na.rm = TRUE) %>%
+  ggplot(aes(x = Task_item, y = mean, colour = Task, group= Task)) +
+  geom_point(size = 2.5) + 
+  geom_line(size = .7) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0, size = .5) +
+  theme_bw(base_size = 10) + 
+  theme(
+    panel.grid = element_blank(), 
+    legend.position = "right", 
+    legend.title = element_blank()) + 
+  facet_wrap(~CP_subset) + 
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(0, 1)) + 
+  scale_color_manual(values = task.pal)+ 
+  labs(x = "Number queried", y = "Mean task performance")
+ggsave("Figures/study2_CPSubset_NNandUnit.png", width = 6.5, height = 3)
 
