@@ -116,7 +116,8 @@ sf.check <- all.data.study1 %>%
 
 #replace
 all.data.study1 %<>%
-  mutate(Task_item = as.numeric(as.character(Task_item)), 
+  mutate(Response = ifelse(Response == "IDK", -1000, as.numeric(as.character(Response))),
+         Task_item = as.numeric(as.character(Task_item)), 
          Response = as.numeric(as.character(Response)), 
          correct.check = ifelse(Response == Task_item +1, 1, 0), 
          correct.validate = ifelse(Correct == correct.check, 1, 0), 
@@ -138,6 +139,10 @@ nn.check <- all.data.study2 %>%
          correct.check = ifelse(Response == Task_item +1, 1, 0), 
          correct.validate = ifelse(Correct == correct.check, 1, 0))%>%
   filter(correct.validate != 1) #0 errors
+
+#change IDK to -1000
+all.data.study2 %<>%
+  mutate(Response = ifelse(Response == "IDK", -1000, as.numeric(as.character(Response))))
 
 # Save and export ----
 save(all.data.study1, file = "../Data/all_data_study1.RData")
