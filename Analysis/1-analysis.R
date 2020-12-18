@@ -92,6 +92,7 @@ all.data.study1 %>%
   dplyr::rename("n" = "sum")%>%
   dplyr::select(Knower_level, n, mean, sd, median, min, max)
 
+
 # ...analyses ----
 ##Descriptives of mean performance
 #overall - by CP knower status
@@ -321,6 +322,52 @@ all.data.study2 %>%
   dplyr::rename("n" = "sum")%>%
   dplyr::select(CP_subset, n, mean, sd, median, min, max)
 
+## ...Follow up - are subset-knowers older than CP-knowers ----
+age.data.1 <- all.data.study1 %>%
+  distinct(SID, Age, CP_subset, Knower_level)
+
+##checking whether 2-knowers are older than CP-knowers
+tmp <- age.data.1 %>%
+  filter(Knower_level == "2" | 
+           Knower_level == "CP")%>%
+  droplevels()
+boxplot(Age ~ Knower_level, data = tmp)
+t.test(subset(tmp, Knower_level == "CP")$Age, 
+       subset(tmp, Knower_level == "2")$Age, var.equal = TRUE) #no significant difference in mean age for exp. 1
+
+## now for study 2
+age.data.2 <- all.data.study2 %>%
+  distinct(SID, Age, CP_subset, Knower_level)
+
+tmp <- age.data.2 %>%
+  filter(Knower_level == "2" | 
+           Knower_level == "CP")%>%
+  droplevels()
+boxplot(Age ~ Knower_level, data = tmp)
+t.test(subset(tmp, Knower_level == "CP")$Age, 
+       subset(tmp, Knower_level == "2")$Age, var.equal = TRUE) #significant difference for exp. 2
+
+## collapse over all data
+age.data <- bind_rows(age.data.1, age.data.2)
+
+t.test(subset(age.data, CP_subset == "CP")$Age, 
+       subset(age.data, CP_subset == "Subset")$Age, var.equal = TRUE)
+
+boxplot(Age ~ Knower_level, data = age.data)
+
+## are 2-knowers older than CP-knowers?
+t.test(subset(age.data, CP_subset == "CP")$Age, 
+       subset(age.data, Knower_level == "2")$Age, var.equal = TRUE) #over both experiments, CP-knowers are older than 2-knowers
+
+tmp <- age.data %>%
+  filter(Knower_level == "2" | 
+           Knower_level == "CP")%>%
+  droplevels()
+boxplot(Age ~ Knower_level, data = tmp)
+
+t.test(subset(tmp, Knower_level == "CP")$Age, 
+       subset(tmp, Knower_level == "2")$Age, var.equal = TRUE)
+
 ##CP_subset
 all.data.study2 %>% 
   distinct(SID, CP_subset, Sex)%>%
@@ -532,6 +579,55 @@ ms.nn.cp <- all.data.study2 %>%
 effsize::cohen.d(subset(ms.nn.cp, Task == "SF")$mean, 
                  subset(ms.nn.cp, Task == "Next_number")$mean)
 
+
+## Test 8: Does What comes next predict Unit Task performance? 
+### Create a data frame with SF correct and NN
+nn.df <- all.data.study2 %>%
+  filter(Task == "Next_number")%>%
+  select(SID, Task_item, Trial_number, Correct)%>%
+  dplyr::rename("nn.correct" = "Correct")
+
+sf.df <- all.data.study2 %>%
+  filter(Task == "SF")%>%
+  select(SID, Task, Task_item, Trial_number, Correct, highest_count.c, age.c, Knower_level, CP_subset, count_range)%>%
+  filter(Trial_number != "1") #we're filtering out the first trial with 1 because we only have 1 trial for 1 in the NN data
+#It feels less weird to remove one trial of 1 from Unit rather than duplicating one trial with 1 in NN
+
+#add the Next Number correct data frame to the Unit Task data frame
+##this data frame has, for each subject, whether they got an item correct on Unit and Next number
+all.df <- left_join(sf.df, nn.df, by = c("SID", "Trial_number"))%>%
+  filter(!is.na(nn.correct))
+
+## So now we can do our analyses: Does performance on Next Number predict success for the corresponding item on Unit Task?
+#subset-knowers first - build a base predicting from age
+nn.sf.predict.subset.base <- glmer(Correct ~ age.c + (1|SID), 
+                              family = "binomial", 
+                              data = subset(all.df, CP_subset == "Subset"))
+# now add nn.correct
+nn.sf.predict.subset <- glmer(Correct ~ nn.correct + age.c + (1|SID), 
+                                   family = "binomial", 
+                                   data = subset(all.df, CP_subset == "Subset"))
+#now compare
+anova(nn.sf.predict.subset.base, nn.sf.predict.subset, test = 'lrt') #next number does not significantly predict Unit; chisq = 2.57, p = .11
+summary(nn.sf.predict.subset)
+
+#CP-knowers next - build a base predicting from age
+nn.sf.predict.cp.base <- glmer(Correct ~ age.c + (1|SID), 
+                                   family = "binomial", 
+                                   data = subset(all.df, CP_subset == "CP"))
+# now add nn.correct
+nn.sf.predict.cp <- glmer(Correct ~ nn.correct + age.c + (1|SID), 
+                              family = "binomial", 
+                              data = subset(all.df, CP_subset == "CP"))
+#now compare
+anova(nn.sf.predict.cp.base, nn.sf.predict.cp, test = 'lrt') #next number does not significantly predict Unit; chisq = 1.57, p = .21
+summary(nn.sf.predict.subset)
+  
+  
+  
+
+
+
 ## follow up: do subset knowers have better performance on NN for numbers within known range? 
 sf.within.nn <- glmer(Correct ~ 1 + (1|SID), 
                       family = "binomial", 
@@ -708,8 +804,30 @@ t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "3")$mean, mu = .5,
 t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "4")$mean, mu = .5, var.equal = TRUE) #ns; t(13) = 0, p = 1
 t.test(subset(study2.ms, Knower_level == "CP" & Task_item == "5")$mean, mu = .5, var.equal = TRUE) #ns t(13) = 0.56, p = 0.58
 
+##Exploratory: Does Highest count predict NN for subset and CP-knowers
+nn.data.2 <- all.data.study2 %>%
+  filter(Task == "Next_number", 
+         !is.na(highest_count))
 
+## subset-knowers first
+nn.subset.hc.base <- glmer(Correct ~ 1 + (1|SID), 
+                      family = "binomial", 
+                      data = subset(nn.data.2, CP_subset == "Subset"))
+nn.subset.hc <- glmer(Correct ~ highest_count.c + (1|SID), 
+                      family = "binomial", 
+                      data = subset(nn.data.2, CP_subset == "Subset"))
+anova(nn.subset.hc.base, nn.subset.hc, test = 'lrt') #does not improve fit
 
+## then CP-knowers
+nn.cp.hc.base <- glmer(Correct ~ 1 + (1|SID), 
+                           family = "binomial", 
+                           data = subset(nn.data.2, CP_subset == "CP"), 
+                       control=glmerControl(optimizer="bobyqa",
+                                            optCtrl=list(maxfun=2e4)))
+nn.cp.hc <- glmer(Correct ~ highest_count.c + (1|SID), 
+                      family = "binomial", 
+                      data = subset(nn.data.2, CP_subset == "CP"))
+anova(nn.cp.hc.base, nn.cp.hc, test = 'lrt') #does improve fit
 
 
 
