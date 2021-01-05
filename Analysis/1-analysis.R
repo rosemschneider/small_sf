@@ -350,6 +350,19 @@ t.test(subset(tmp, Knower_level == "CP")$Age,
 ## collapse over all data
 age.data <- bind_rows(age.data.1, age.data.2)
 
+age.data %>%
+distinct(SID, Knower_level, Age)%>%
+  group_by(Knower_level)%>%
+  summarise_at('Age', 
+               list(~mean(., na.rm=T), 
+                    ~sd(., na.rm=T),
+                    ~median(., na.rm=T),
+                    ~min(., na.rm=T),
+                    ~max(., na.rm=T),
+                    ~sum(!is.na(.))))%>%
+  dplyr::rename("n" = "sum")%>%
+  dplyr::select(Knower_level, n, mean, sd, median, min, max)
+
 t.test(subset(age.data, CP_subset == "CP")$Age, 
        subset(age.data, CP_subset == "Subset")$Age, var.equal = TRUE)
 
@@ -366,7 +379,8 @@ tmp <- age.data %>%
 boxplot(Age ~ Knower_level, data = tmp)
 
 t.test(subset(tmp, Knower_level == "CP")$Age, 
-       subset(tmp, Knower_level == "2")$Age, var.equal = TRUE)
+       subset(tmp, Knower_level == "2")$Age, var.equal = TRUE, 
+       alternative = "g")
 
 ##CP_subset
 all.data.study2 %>% 
@@ -546,6 +560,13 @@ subset.sf.nn.comparison <- glmer(Correct ~ Task + age.c + (1|SID),
                                  family = "binomial",
                                    data = subset(all.data.study2, CP_subset == "Subset"))
 summary(subset.sf.nn.comparison)
+
+## Test 5a: Is there an interaction between KL and Task? 
+subset.cp.int.base <- glmer(Correct ~ Task+ CP_subset + age.c + (1|SID), 
+                       data = all.data.study2, family = "binomial")
+subset.cp.int <- glmer(Correct ~ Task*CP_subset + age.c + (1|SID), 
+                       data = all.data.study2, family = "binomial")
+anova(subset.cp.int.base, subset.cp.int, test = 'lrt')
 
 ## Test 6: Do subset-knowers have lower performance on NN than SF for numbers within their known range?
 subset.sf.nn.comparison.within <- glmer(Correct ~ Task + age.c + (1|SID), 
